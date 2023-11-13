@@ -11,9 +11,10 @@ class HomeScreen extends StatelessWidget {
         child: Container(
           color: Colors.black,
           // 현재 사용하는 기기의 width
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: Row(
+          // width: MediaQuery.of(context).size.width,
+          // height: MediaQuery.of(context).size.height,
+
+          child: Column(
             // MainAxisAlignment - 주축 정렬
             // start - 시작
             // end - 끝
@@ -29,6 +30,11 @@ class HomeScreen extends StatelessWidget {
             // center - 가운데
             // stretch - 최대한으로 늘린다
             crossAxisAlignment: CrossAxisAlignment.start,
+
+            // MainAxisSize - 주측 크기
+            // max - 최대
+            // min - 최소
+            mainAxisSize: MainAxisSize.min,
             
             children: [
               Container(
