@@ -9,6 +9,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  DateTime selectedDate = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,28 +26,61 @@ class _HomeScreenState extends State<HomeScreen> {
             width: MediaQuery.of(context).size.width,
             child: Column(
               children: [
-                _TopPart(),
+                _TopPart(
+                  selectedDate: selectedDate,
+                  onPressed: onHeartPressed,
+                ),
                 _BottomPart(),
               ],
             )),
       ),
     );
   }
+
+  onHeartPressed() {
+    DateTime now = DateTime.now();
+
+    // dialog
+    showCupertinoDialog(
+      context: context,
+      // barrierDismissible 기본값 : false
+      // 배경을 누르면 자동으로 닫게하기
+      barrierDismissible: true,
+      builder: (context) {
+        // 특정 위젯이 어디에 정리해야할지 모르면 전체화면을 차지
+        // Align 위젯을 사용해서 위젯을 어디에 정리할지 알려주기
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            color: Colors.white,
+            height: 300.0,
+            child: CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.date,
+              initialDateTime: selectedDate,
+              maximumDate: DateTime(now.year, now.month, now.day),
+              // 날짜나 시간이 바뀌었을때
+              onDateTimeChanged: (DateTime date) {
+                setState(() {
+                  selectedDate = date;
+                });
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 
-class _TopPart extends StatefulWidget {
-  const _TopPart({super.key});
+class _TopPart extends StatelessWidget {
+  final DateTime selectedDate;
+  final VoidCallback onPressed;
 
-  @override
-  State<_TopPart> createState() => _TopPartState();
-}
-
-class _TopPartState extends State<_TopPart> {
-  DateTime selectedDate = DateTime(
-    DateTime.now().year,
-    DateTime.now().month,
-    DateTime.now().day,
-  );
+  _TopPart({
+    required this.selectedDate,
+    required this.onPressed,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -77,54 +116,18 @@ class _TopPartState extends State<_TopPart> {
           ),
           IconButton(
             iconSize: 60.0,
-            onPressed: () {
-              // dialog
-              showCupertinoDialog(
-                context: context,
-                // barrierDismissible 기본값 : false
-                // 배경을 누르면 자동으로 닫게하기
-                barrierDismissible: true,
-                builder: (context) {
-                  // 특정 위젯이 어디에 정리해야할지 모르면 전체화면을 차지
-                  // Align 위젯을 사용해서 위젯을 어디에 정리할지 알려주기
-                  return Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      color: Colors.white,
-                      height: 300.0,
-                      child: CupertinoDatePicker(
-                        mode: CupertinoDatePickerMode.date,
-                        initialDateTime: selectedDate,
-                        maximumDate: DateTime(
-                          now.year,
-                          now.month,
-                          now.day
-                        ),
-                        // 날짜나 시간이 바뀌었을때
-                        onDateTimeChanged: (DateTime date) {
-                          setState(() {
-                            selectedDate = date;
-                          });
-                        },
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
+            onPressed: onPressed,
             icon: Icon(
               Icons.favorite,
               color: Colors.red,
             ),
           ),
           Text(
-            'D+${
-                DateTime(
+            'D+${DateTime(
                   now.year,
                   now.month,
                   now.day,
-                ).difference(selectedDate).inDays + 1
-            }',
+                ).difference(selectedDate).inDays + 1}',
             style: TextStyle(
                 color: Colors.white,
                 fontFamily: 'sunflower',
