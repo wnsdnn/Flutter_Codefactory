@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:random_number_generator/constant/color.dart';
 
@@ -9,8 +11,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<int> randomNumbers = [ 2274, 5926, 1560 ];
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: PRIMARY_COLOR,
       body: SafeArea(
@@ -42,11 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    2274,
-                    5926,
-                    1560,
-                  ].asMap().entries.map((item) {
+                  children: randomNumbers.asMap().entries.map((item) {
                     final index = item.key;
                     final number = item.value;
 
@@ -57,10 +58,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             .toString()
                             .split('')
                             .map((num) => Image.asset(
-                              'asset/img/$num.png',
-                              height: 65.0,
-                              width: 45.0,
-                            ))
+                                  'asset/img/$num.png',
+                                  height: 65.0,
+                                  width: 45.0,
+                                ))
                             .toList(),
                       ),
                     );
@@ -76,7 +77,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Text(
                     '생성하기!',
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    // 생성하기 버튼 클릭!
+                    final rand = Random();
+                    final Set<int> newNumbers = {};
+
+                    while(newNumbers.length != 3) {
+                      newNumbers.add(rand.nextInt(10000));
+                    }
+
+                    setState(() {
+                      randomNumbers = newNumbers.toList();
+                    });
+                  },
                 ),
               )
             ],
