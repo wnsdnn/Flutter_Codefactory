@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -48,18 +49,48 @@ class _TopPart extends StatelessWidget {
               Text(
                 '우리 처음 만난날',
                 style: TextStyle(
-                    color: Colors.white, fontFamily: 'sunflower', fontSize: 30.0),
+                    color: Colors.white,
+                    fontFamily: 'sunflower',
+                    fontSize: 30.0),
               ),
               Text(
                 '2021,12,27',
                 style: TextStyle(
-                    color: Colors.white, fontFamily: 'sunflower', fontSize: 20.0),
+                    color: Colors.white,
+                    fontFamily: 'sunflower',
+                    fontSize: 20.0),
               ),
             ],
           ),
           IconButton(
             iconSize: 60.0,
-            onPressed: () {},
+            onPressed: () {
+              // dialog
+              showCupertinoDialog(
+                context: context,
+                // barrierDismissible 기본값 : false
+                // 배경을 누르면 자동으로 닫게하기
+                barrierDismissible: true,
+                builder: (context) {
+                  // 특정 위젯이 어디에 정리해야할지 모르면 전체화면을 차지
+                  // Align 위젯을 사용해서 위젯을 어디에 정리할지 알려주기
+                  return Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      color: Colors.white,
+                      height: 300.0,
+                      child: CupertinoDatePicker(
+                        mode: CupertinoDatePickerMode.date,
+                        // 날짜나 시간이 바뀌었을때
+                        onDateTimeChanged: (DateTime date) {
+                          print(date);
+                        },
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
             icon: Icon(
               Icons.favorite,
               color: Colors.red,
@@ -78,7 +109,6 @@ class _TopPart extends StatelessWidget {
     );
   }
 }
-
 
 class _BottomPart extends StatelessWidget {
   const _BottomPart({super.key});
