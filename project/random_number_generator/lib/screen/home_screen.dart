@@ -43,10 +43,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('123'),
-                    Text('456'),
-                    Text('789'),
-                  ],
+                    123,
+                    456,
+                    789,
+                  ].map((number) {
+                    return Row(
+                      children: number
+                          .toString()
+                          .split('')
+                          .map((num) => Image.asset(
+                                'asset/img/$num.png',
+                                height: 65.0,
+                                width: 45.0,
+                              ))
+                          .toList(),
+                    );
+                  }).toList(),
                 ),
               ),
               SizedBox(
