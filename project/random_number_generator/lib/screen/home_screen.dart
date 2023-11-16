@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:random_number_generator/constant/color.dart';
+import 'package:random_number_generator/screen/settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: PRIMARY_COLOR,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -66,13 +67,24 @@ class _Header extends StatelessWidget {
             Icons.settings,
             color: RED_COLOR,
           ),
-          onPressed: () {},
+          onPressed: () {
+            // 화면 이동
+            // 라우터 스택에 넣음
+            // list - add
+            // [HomeScreen(), SettingsScreen()]
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return SettingsScreen();
+                },
+              ),
+            );
+          },
         )
       ],
     );
   }
 }
-
 
 class _Body extends StatelessWidget {
   List<int> randomNumbers;
