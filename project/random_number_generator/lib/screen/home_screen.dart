@@ -25,7 +25,9 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _Header(onPressed: OnSettingsPop,),
+              _Header(
+                onPressed: OnSettingsPop,
+              ),
               _Body(randomNumbers: randomNumbers),
               _Footer(onPressed: OnRandomNumberGenerate),
             ],
@@ -56,12 +58,14 @@ class _HomeScreenState extends State<HomeScreen> {
     final int? result = await Navigator.of(context).push<int>(
       MaterialPageRoute(
         builder: (context) {
-          return SettingsScreen(maxNumber: maxNumber,);
+          return SettingsScreen(
+            maxNumber: maxNumber,
+          );
         },
       ),
     );
 
-    if(result != null) {
+    if (result != null) {
       setState(() {
         maxNumber = result;
       });
@@ -84,7 +88,10 @@ class _Header extends StatelessWidget {
         Text(
           '랜덤숫자 생성기',
           style: TextStyle(
-              color: Colors.white, fontSize: 30.0, fontWeight: FontWeight.w700),
+            color: Colors.white,
+            fontSize: 30.0,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         IconButton(
           iconSize: 25.0,
