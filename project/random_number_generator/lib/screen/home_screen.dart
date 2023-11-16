@@ -11,6 +11,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int maxNumber = 1000;
   List<int> randomNumbers = [2274, 5926, 1560];
 
   @override
@@ -23,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _Header(),
+              _Header(onPressed: OnSettingsPop,),
               _Body(randomNumbers: randomNumbers),
               _Footer(onPressed: OnRandomNumberGenerate),
             ],
@@ -39,17 +40,40 @@ class _HomeScreenState extends State<HomeScreen> {
     final Set<int> newNumbers = {};
 
     while (newNumbers.length != 3) {
-      newNumbers.add(rand.nextInt(10000));
+      newNumbers.add(rand.nextInt(maxNumber));
     }
 
     setState(() {
       randomNumbers = newNumbers.toList();
     });
   }
+
+  void OnSettingsPop() async {
+    // 화면 이동 (라우터 스택에 넣음)
+    // list - add [HomeScreen(), SettingsScreen()]
+    // 미래의 돌려받을 값이기에 await 선언
+    final int? result = await Navigator.of(context).push<int>(
+      MaterialPageRoute(
+        builder: (context) {
+          return SettingsScreen();
+        },
+      ),
+    );
+
+    if(result != null) {
+      setState(() {
+        maxNumber = result;
+      });
+    }
+  }
 }
 
 class _Header extends StatelessWidget {
-  const _Header({Key? key}) : super(key: key);
+  final VoidCallback onPressed;
+  const _Header({
+    required this.onPressed,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -67,19 +91,7 @@ class _Header extends StatelessWidget {
             Icons.settings,
             color: RED_COLOR,
           ),
-          onPressed: () {
-            // 화면 이동
-            // 라우터 스택에 넣음
-            // list - add
-            // [HomeScreen(), SettingsScreen()]
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) {
-                  return SettingsScreen();
-                },
-              ),
-            );
-          },
+          onPressed: onPressed,
         )
       ],
     );

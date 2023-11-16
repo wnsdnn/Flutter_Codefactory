@@ -41,8 +41,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               Slider(
                 value: maxNumber,
-                min: 10000,
-                max: 1000000,
+                min: 1000,
+                max: 100000,
                 onChanged: (value) {
                   // Slider는 버튼의 위치를 혼자서 못 바꿔줘서
                   // value에다가 값을 넣어준뒤 다시 빌드 해줘야 버튼이 움직인다.
@@ -52,7 +52,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  // pop - 맨 마지막 화면 없애기
+                  Navigator.of(context).pop(maxNumber.toInt());
+                },
                 style: ElevatedButton.styleFrom(
                   primary: RED_COLOR,
                 ),
