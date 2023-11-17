@@ -1,24 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:navigation/layout/main_layout.dart';
+import 'package:navigation/screen/route_two_screen.dart';
 
-class RouteOneScreen extends StatefulWidget {
-  const RouteOneScreen({Key? key}) : super(key: key);
+class RouteOneScreen extends StatelessWidget {
+  final int number;
 
-  @override
-  State<RouteOneScreen> createState() => _RouteOneScreenState();
-}
+  const RouteOneScreen({
+    required this.number,
+    Key? key,
+  }) : super(key: key);
 
-class _RouteOneScreenState extends State<RouteOneScreen> {
   @override
   Widget build(BuildContext context) {
     return MainLayout(
       title: 'Route One',
       children: [
+        Text(
+          number.toString(),
+          textAlign: TextAlign.center,
+        ),
         ElevatedButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(456);
           },
           child: Text('Pop'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            // [HomeScreen(), RouteOneScreen(), RouteTwoScreen()]
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return RouteTwoScreen();
+                },
+                settings: RouteSettings(
+                  arguments: 789
+                )
+              ),
+            );
+          },
+          child: Text('Push'),
         ),
       ],
     );
