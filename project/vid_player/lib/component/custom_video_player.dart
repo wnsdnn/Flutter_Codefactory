@@ -18,6 +18,7 @@ class CustomVideoPlayer extends StatefulWidget {
 
 class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   VideoPlayerController? videoController;
+  Duration currentPosition = Duration();
 
   @override
   void initState() {
@@ -30,11 +31,19 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   initializeController() async {
     videoController = VideoPlayerController.file(
         // dart.io에 있는 File 객체 가져옴
-        File(widget.video.path)
-    );
+        File(widget.video.path));
 
     // 초기화
     await videoController!.initialize();
+
+    // 비디오의 값이 변경될때마다 실행
+    videoController!.addListener(() {
+      final currentPosition = videoController!.value.position;
+
+      setState(() {
+        this.currentPosition = currentPosition;
+      });
+    });
 
     // 다시 빌드할수 있도록 setState() 호출
     setState(() {});
@@ -58,23 +67,22 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
             onForwardPressed: onForwardPressed,
             isPlaying: videoController!.value.isPlaying,
           ),
-          Positioned(
-            top: 0,
-            right: 0,
-            child: IconButton(
-              onPressed: () {},
-              iconSize: 30.0,
-              color: Colors.white,
-              icon: Icon(
-                Icons.photo_camera_back,
-              ),
-            ),
-          )
+          _NewVideo(onPressed: onVideoPressed),
+          _SliderBottom(
+            currentPosition: currentPosition,
+            maxPosition: videoController!.value.duration,
+            onSliderChanged: onSliderChanged,
+          ),
         ],
       ),
     );
   }
 
+  void onSliderChanged(double value) {
+    videoController!.seekTo(Duration(seconds: value.toInt()));
+  }
+
+  void onVideoPressed() {}
 
   void onReversePressed() {
     // 현재 영상 길이
@@ -84,7 +92,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
     Duration position = Duration();
 
     // currentPosition이 3초보다 클때만 -3초
-    if(currentPosition.inSeconds > 3) {
+    if (currentPosition.inSeconds > 3) {
       position = currentPosition - Duration(seconds: 3);
     }
     videoController!.seekTo(position);
@@ -94,7 +102,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
     // 이미 실행중이면 중지
     // 실행중이 아니면 정지
     setState(() {
-      if(videoController!.value.isPlaying) {
+      if (videoController!.value.isPlaying) {
         // 재생 상태
         videoController!.pause();
       } else {
@@ -113,7 +121,8 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
     Duration position = maxPosition;
 
     // 전체길이 - 3초보다 현재 길이가 더 작으면 +3
-    if((maxPosition - Duration(seconds: 3)).inSeconds > currentPosition.inSeconds) {
+    if ((maxPosition - Duration(seconds: 3)).inSeconds >
+        currentPosition.inSeconds) {
       position = currentPosition + Duration(seconds: 3);
     }
     videoController!.seekTo(position);
@@ -169,6 +178,80 @@ class _Controls extends StatelessWidget {
       color: Colors.white,
       icon: Icon(
         iconData,
+      ),
+    );
+  }
+}
+
+class _NewVideo extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  const _NewVideo({
+    required this.onPressed,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: 0,
+      right: 0,
+      child: IconButton(
+        onPressed: onPressed,
+        iconSize: 30.0,
+        color: Colors.white,
+        icon: Icon(
+          Icons.photo_camera_back,
+        ),
+      ),
+    );
+  }
+}
+
+class _SliderBottom extends StatelessWidget {
+  final Duration currentPosition;
+  final Duration maxPosition;
+  final ValueChanged<double> onSliderChanged;
+
+  const _SliderBottom({
+    required this.currentPosition,
+    required this.maxPosition,
+    required this.onSliderChanged,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Row(
+          children: [
+            Text(
+              '${currentPosition.inMinutes.toString().padLeft(2, '0')}:${(currentPosition.inSeconds % 60).toString().padLeft(2, '0')}',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            Expanded(
+              child: Slider(
+                value: currentPosition.inSeconds.toDouble(),
+                min: 0,
+                max: maxPosition.inSeconds.toDouble(),
+                onChanged: onSliderChanged,
+              ),
+            ),
+            Text(
+              '${maxPosition.inMinutes.toString().padLeft(2, '0')}:${(maxPosition.inSeconds % 60).toString().padLeft(2, '0')}',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
