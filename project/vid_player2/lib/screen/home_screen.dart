@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:vid_player2/conponent/custom_video_player.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,50 +14,51 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return video == null ? renderEmpty() : renderVideo();
+    return Scaffold(
+      body: video == null ? renderEmpty() : renderVideo(),
+    );
   }
 
   Widget renderVideo() {
-    return Scaffold(
-      body: Center(
-        child: Text('Video 입니다.'),
+    return Center(
+      child: CustomVideoPlayer(
+        video: video!,
+        newVideoPressed: newVideoPressed,
       ),
     );
   }
 
   Widget renderEmpty() {
-    return Scaffold(
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        decoration: getBoxDecoration(),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _Logo(
-              onTapClickEvent: onTapClickEvent,
-            ),
-            SizedBox(
-              height: 20.0,
-            ),
-            _TextPart(),
-          ],
-        ),
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      decoration: getBoxDecoration(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _Logo(
+            onTapClickEvent: newVideoPressed,
+          ),
+          SizedBox(
+            height: 20.0,
+          ),
+          _TextPart(),
+        ],
       ),
     );
   }
 
-  void onTapClickEvent() async {
+  void newVideoPressed() async {
     final video = await ImagePicker().pickVideo(
-        source: ImageSource.gallery,
+      source: ImageSource.gallery,
     );
 
-    if(video != null) {
+    if (video != null) {
       setState(() {
         this.video = video;
       });
     }
   }
-  
+
   BoxDecoration getBoxDecoration() {
     return BoxDecoration(
       gradient: LinearGradient(
