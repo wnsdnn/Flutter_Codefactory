@@ -15,7 +15,7 @@
         android:icon="@mipmap/ic_launcher">
         <!-- 구글 맵 키 설정-->
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="dsa"/>
+            android:value="test2"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
