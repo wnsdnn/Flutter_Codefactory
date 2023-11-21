@@ -1,1 +1,2 @@
-private/**/AndroidManifest.xml
+# chool_check 폴더 안에 AndroidManifest.xml는 git push X
+chool_check/**/AndroidManifest.xml
