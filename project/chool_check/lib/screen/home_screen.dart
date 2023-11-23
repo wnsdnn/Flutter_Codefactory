@@ -26,13 +26,44 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: renderAppBar(),
-      body: Column(
-        children: [
-          _CustomGoogleMap(
-            initialPosition: initialPosition,
-          ),
-         _ChoolCheckButton(),
-        ],
+      body: FutureBuilder(
+        future: checkPermission(),
+        // checkPermission의 return값을 snapshot 값으로 받을수 있다
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          // print(snapshot.connectionState);
+          // snapshot.connectionState의 값
+          // watiting - 대기중 (함수가 아직 실행중일때 반환)
+          // done - 끝 (함수가 다 빌드 됬을때)
+          // 이 값을 가지고 지도의 상태를 알수 있음
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // 로딩 상태일때
+            return Center(
+              child: CircularProgressIndicator(
+                color: Colors.black,
+              ),
+            );
+          }
+
+
+          // 위치 권한이 허가되었을때
+          // print(snapshot.data);
+          if(snapshot.data == '위치 권한이 허가되었습니다.') {
+            return Column(
+              children: [
+                _CustomGoogleMap(
+                  initialPosition: initialPosition,
+                ),
+                _ChoolCheckButton(),
+              ],
+            );
+          }
+
+          // 위치 권한이 허가가 안되었을떄
+          return Center(
+            child: Text(snapshot.data),
+          );
+        },
       ),
     );
   }
@@ -41,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // 기기에 위치 정보가 꺼져있는지 확인
     final isLocationEnabled = await Geolocator.isLocationServiceEnabled();
 
-    if(!isLocationEnabled) {
+    if (!isLocationEnabled) {
       return '위치 서비스를 활성화 해주세요.';
     }
 
@@ -53,21 +84,20 @@ class _HomeScreenState extends State<HomeScreen> {
     // always - 권한 허용
     LocationPermission checkedPermission = await Geolocator.checkPermission();
 
-    if(checkedPermission == LocationPermission.denied) {
+    if (checkedPermission == LocationPermission.denied) {
       checkedPermission = await Geolocator.requestPermission();
 
-      if(checkedPermission == LocationPermission.denied) {
+      if (checkedPermission == LocationPermission.denied) {
         return '위치 권한을 허가해주세요.';
       }
     }
 
-    if(checkedPermission == LocationPermission.deniedForever) {
+    if (checkedPermission == LocationPermission.deniedForever) {
       return '앱의 위치 권한을 세팅에서 허가해주세요.';
     }
 
     return '위치 권한이 허가되었습니다.';
   }
-
 
   AppBar renderAppBar() {
     return AppBar(
@@ -105,9 +135,8 @@ class _ChoolCheckButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Expanded(
+    return Expanded(
       child: Text('출근'),
     );
   }
 }
-
