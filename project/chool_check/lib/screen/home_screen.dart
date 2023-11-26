@@ -11,6 +11,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool choolCheckDone = false;
+  GoogleMapController? mapController;
 
   // latitude - 위도, longitude - 경도
   static final LatLng companyLatLng = LatLng(
@@ -115,9 +116,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       circle: choolCheckDone
                           ? checkDoneCircle
                           : isWithinRange
-                            ? withinDistanceCircle
-                            : notWithinDistanceCircle,
+                              ? withinDistanceCircle
+                              : notWithinDistanceCircle,
                       marker: marker,
+                      onMapCreated: onMapCreated,
                     ),
                     _ChoolCheckButton(
                       isWithinRange: isWithinRange,
@@ -139,7 +141,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void onChoolCheckPressed() async {
+  onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+  }
+
+  onChoolCheckPressed() async {
     final result = await showDialog(
       context: context,
       builder: (context) {
@@ -165,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
 
-    if(result) {
+    if (result) {
       setState(() {
         choolCheckDone = result;
       });
@@ -207,9 +213,33 @@ class _HomeScreenState extends State<HomeScreen> {
     return AppBar(
       title: Text(
         '오늘도 출근',
-        style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w700),
+        style: TextStyle(
+          color: Colors.blue,
+          fontWeight: FontWeight.w700,
+        ),
       ),
       backgroundColor: Colors.white,
+      actions: [
+        IconButton(
+          onPressed: () async {
+            if (mapController == null) {
+              return;
+            }
+
+            final location = await Geolocator.getCurrentPosition();
+            mapController!.animateCamera(
+              CameraUpdate.newLatLng(
+                LatLng(
+                  location.latitude,
+                  location.longitude,
+                ),
+              ),
+            );
+          },
+          color: Colors.blue,
+          icon: Icon(Icons.my_location),
+        ),
+      ],
     );
   }
 }
@@ -218,9 +248,11 @@ class _CustomGoogleMap extends StatelessWidget {
   final CameraPosition initialPosition;
   final Circle circle;
   final Marker marker;
+  final MapCreatedCallback onMapCreated;
 
   const _CustomGoogleMap({
     required this.initialPosition,
+    required this.onMapCreated,
     required this.circle,
     required this.marker,
     Key? key,
@@ -237,6 +269,7 @@ class _CustomGoogleMap extends StatelessWidget {
         myLocationButtonEnabled: false,
         circles: Set.from([circle]),
         markers: Set.from([marker]),
+        onMapCreated: onMapCreated,
       ),
     );
   }
@@ -266,8 +299,8 @@ class _ChoolCheckButton extends StatelessWidget {
             color: choolCheckDone
                 ? Colors.green
                 : isWithinRange
-                  ? Colors.blue
-                  : Colors.red,
+                    ? Colors.blue
+                    : Colors.red,
           ),
           SizedBox(
             height: 20.0,
