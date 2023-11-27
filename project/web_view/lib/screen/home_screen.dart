@@ -18,6 +18,16 @@ class HomeScreen extends StatelessWidget {
         title: Text('Wnsdnn Blog'),
         centerTitle: true,
         backgroundColor: Colors.orange,
+        actions: [
+          IconButton(
+            onPressed: () {
+              controller.loadRequest(homeUrl);
+            },
+            icon: Icon(
+              Icons.home
+            ),
+          )
+        ],
       ),
       body: WebViewWidget(
         controller: controller,
