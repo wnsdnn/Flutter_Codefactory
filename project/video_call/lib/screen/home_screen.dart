@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:video_call/screen/cam_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -102,7 +103,13 @@ class _Button extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(6.0),
               )),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) {
+                return CamScreen();
+              },)
+            );
+          },
           child: Text(
             '입장하기',
             style: TextStyle(
