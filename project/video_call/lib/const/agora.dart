@@ -1,3 +1,5 @@
+// 아고라 프로젝트 사용한 프로젝트 비활성화 상태로 변경됨
+
 const APP_ID = '606f7fd491ad430096d810e66c8808ff';
 
 const CHANNEL_NAME = 'testchannel';
