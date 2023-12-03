@@ -1,12 +1,16 @@
 import 'package:calendar_scheduler/const/color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomeTextField extends StatelessWidget {
   final String label;
+  // true - 시간 / false - 내용
+  final bool isTime;
 
   const CustomeTextField({
     super.key,
     required this.label,
+    required this.isTime,
   });
 
   @override
@@ -24,15 +28,27 @@ class CustomeTextField extends StatelessWidget {
         SizedBox(
           height: 8.0,
         ),
-        TextField(
-          cursorColor: Colors.grey,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            filled: true,
-            fillColor: Colors.grey[300],
+        if (isTime) renderTextField(),
+        if (!isTime)
+          Expanded(
+            child: renderTextField(),
           ),
-        ),
       ],
+    );
+  }
+
+  Widget renderTextField() {
+    return TextField(
+      cursorColor: Colors.grey,
+      maxLines: isTime ? 1 : null,
+      expands: !isTime, // 사이즈 최대로 늘리기
+      keyboardType: isTime ? TextInputType.number : TextInputType.multiline,
+      inputFormatters: isTime ? [FilteringTextInputFormatter.digitsOnly] : [],
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        filled: true,
+        fillColor: Colors.grey[300],
+      ),
     );
   }
 }
