@@ -25,7 +25,7 @@ class LocalDatabase extends _$LocalDatabase {
 
   Future<int> createCategoryColor(CategoryColorsCompanion data) =>
       into(categoryColors).insert(data);
-  
+
   Future<List<CategoryColor>> getCategoryColors() => select(categoryColors).get();
 
   @override
