@@ -36,14 +36,23 @@ class LocalDatabase extends _$LocalDatabase {
     ]);
 
     query.where(schedules.date.equals(date));
+    query.orderBy(
+      [
+        // asc -> ascending 오름차순
+        // desc -> descending 내림차순
+        OrderingTerm.asc(schedules.startTime),
+      ],
+    );
 
     return query.watch().map(
-          (rows) => rows.map(
-            (row) => ScheduleWithColor(
-              schedule: row.readTable(schedules),
-              categoryColor: row.readTable(categoryColors),
-            ),
-          ).toList(),
+          (rows) => rows
+              .map(
+                (row) => ScheduleWithColor(
+                  schedule: row.readTable(schedules),
+                  categoryColor: row.readTable(categoryColors),
+                ),
+              )
+              .toList(),
         );
   }
 
