@@ -55,7 +55,9 @@ class _HomeScreenState extends State<HomeScreen> {
           context: context,
           isScrollControlled: true, // 최대 늘리기
           builder: (context) {
-            return ScheduleBottomSheet();
+            return ScheduleBottomSheet(
+                selectedDate: selectedDay,
+            );
           },
         );
       },
