@@ -17,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  DateTime selectedDay = DateTime(
+  DateTime selectedDay = DateTime.utc(
     DateTime.now().year,
     DateTime.now().month,
     DateTime.now().day,
@@ -42,7 +42,9 @@ class _HomeScreenState extends State<HomeScreen> {
               scheduleCount: 3,
             ),
             SizedBox(height: 8.0),
-            _SchduleList(),
+            _SchduleList(
+                selectedDate: selectedDay,
+            ),
           ],
         ),
       ),
@@ -58,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
           isScrollControlled: true, // 최대 늘리기
           builder: (context) {
             return ScheduleBottomSheet(
-                selectedDate: selectedDay,
+              selectedDate: selectedDay,
             );
           },
         );
@@ -80,7 +82,12 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class _SchduleList extends StatelessWidget {
-  const _SchduleList({super.key});
+  final DateTime selectedDate;
+
+  const _SchduleList({
+    super.key,
+    required this.selectedDate,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -88,27 +95,38 @@ class _SchduleList extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: StreamBuilder<List<Schedule>>(
-          stream: GetIt.I<LocalDatabase>().watchSchedules(),
-          builder: (context, snapshot) {
-            print(snapshot.data);
+            stream: GetIt.I<LocalDatabase>().watchSchedules(),
+            builder: (context, snapshot) {
+              print('------------- original data --------------');
+              print(snapshot.data);
 
-            return ListView.separated(
-              itemCount: 100,
-              separatorBuilder: (context, index) {
-                // 각각의 위젯들 사이에 들어갈 위젯 리턴
-                return SizedBox(height: 8.0);
-              },
-              itemBuilder: (context, index) {
-                return ScheduleCard(
-                  startTime: 8,
-                  endTime: 11,
-                  content: '프로그래밍 공부하기',
-                  color: Colors.red,
-                );
-              },
-            );
-          }
-        ),
+              List<Schedule> schedules = [];
+
+              if (snapshot.hasData) {
+                schedules = snapshot.data!
+                    .where((element) => element.date == selectedDate)
+                    .toList();
+                print('------------- filtered data --------------');
+                print(selectedDate);
+                print(schedules);
+              }
+
+              return ListView.separated(
+                itemCount: 100,
+                separatorBuilder: (context, index) {
+                  // 각각의 위젯들 사이에 들어갈 위젯 리턴
+                  return SizedBox(height: 8.0);
+                },
+                itemBuilder: (context, index) {
+                  return ScheduleCard(
+                    startTime: 8,
+                    endTime: 11,
+                    content: '프로그래밍 공부하기',
+                    color: Colors.red,
+                  );
+                },
+              );
+            }),
       ),
     );
   }
