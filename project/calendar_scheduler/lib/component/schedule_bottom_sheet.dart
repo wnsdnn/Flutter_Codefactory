@@ -1,6 +1,10 @@
 import 'package:calendar_scheduler/component/custome_text_field.dart';
 import 'package:calendar_scheduler/const/color.dart';
+import 'package:calendar_scheduler/database/drift_database.dart';
+import 'package:calendar_scheduler/model/category_color.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:calendar_scheduler/database/drift_database.dart';
 
 class ScheduleBottomSheet extends StatefulWidget {
   const ScheduleBottomSheet({super.key});
@@ -58,7 +62,25 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
                       },
                     ),
                     SizedBox(height: 16.0),
-                    _ColorPicker(),
+                    FutureBuilder<List<CategoryColor>>(
+                        future: GetIt.I<LocalDatabase>().getCategoryColors(),
+                        builder: (context, snapshot) {
+                          print(snapshot.data);
+
+                          return _ColorPicker(
+                            colors: snapshot.hasData
+                                ? snapshot.data!
+                                    .map(
+                                      (e) => Color(
+                                        int.parse(
+                                          'FF${e.hexCode}',
+                                          radix: 16,
+                                        ),
+                                      ),
+                                    ).toList()
+                                : [],
+                          );
+                        }),
                     SizedBox(height: 8.0),
                     _SaveButton(
                       onPressed: onSavePressed,
@@ -153,7 +175,12 @@ class _Content extends StatelessWidget {
 }
 
 class _ColorPicker extends StatelessWidget {
-  const _ColorPicker({super.key});
+  final List<Color> colors;
+
+  const _ColorPicker({
+    super.key,
+    required this.colors,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -162,15 +189,7 @@ class _ColorPicker extends StatelessWidget {
       spacing: 8.0,
       // 세로 gap
       runSpacing: 10.0,
-      children: [
-        renderColor(Colors.red),
-        renderColor(Colors.orange),
-        renderColor(Colors.yellow),
-        renderColor(Colors.green),
-        renderColor(Colors.blue),
-        renderColor(Colors.indigo),
-        renderColor(Colors.purple),
-      ],
+      children: colors.map((e) => renderColor(e)).toList(),
     );
   }
 
