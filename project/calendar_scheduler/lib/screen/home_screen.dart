@@ -120,20 +120,34 @@ class _SchduleList extends StatelessWidget {
                   final scheduleWithColor = snapshot.data![index];
                   final scheduleId = scheduleWithColor.schedule.id;
 
-                  return Dismissible(
-                    key: ObjectKey(scheduleId),
-                    direction: DismissDirection.endToStart,
-                    onDismissed: (DismissDirection direction) {
-                      GetIt.I<LocalDatabase>().removeSchedule(scheduleId);
+                  return GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (context) {
+                          return ScheduleBottomSheet(
+                            selectedDate: selectedDate,
+                            scheduleId: scheduleId,
+                          );
+                        },
+                      );
                     },
-                    child: ScheduleCard(
-                      startTime: scheduleWithColor.schedule.startTime,
-                      endTime: scheduleWithColor.schedule.endTime,
-                      content: scheduleWithColor.schedule.content,
-                      color: Color(
-                        int.parse(
-                          'FF${scheduleWithColor.categoryColor.hexCode}',
-                          radix: 16,
+                    child: Dismissible(
+                      key: ObjectKey(scheduleId),
+                      direction: DismissDirection.endToStart,
+                      onDismissed: (DismissDirection direction) {
+                        GetIt.I<LocalDatabase>().removeSchedule(scheduleId);
+                      },
+                      child: ScheduleCard(
+                        startTime: scheduleWithColor.schedule.startTime,
+                        endTime: scheduleWithColor.schedule.endTime,
+                        content: scheduleWithColor.schedule.content,
+                        color: Color(
+                          int.parse(
+                            'FF${scheduleWithColor.categoryColor.hexCode}',
+                            radix: 16,
+                          ),
                         ),
                       ),
                     ),
