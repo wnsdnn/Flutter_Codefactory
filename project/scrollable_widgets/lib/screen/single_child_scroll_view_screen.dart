@@ -98,7 +98,7 @@ class SingleChildScrollViewScreen extends StatelessWidget {
     int? index,
   }) {
     if(index != null) {
-      print(index);
+      // print(index);
     }
 
     return Container(
