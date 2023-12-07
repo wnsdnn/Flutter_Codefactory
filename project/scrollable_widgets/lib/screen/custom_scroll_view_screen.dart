@@ -12,14 +12,13 @@ class CustomScrollViewScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            title: Text('CustomScrollViewScreen'),
+            title: Text('Custo  mScrollViewScreen'),
           ),
-          renderChildBuilderList(),
+          renderSliverGridBuilder(),
         ],
       ),
     );
   }
-
 
   // ListView 기본생성자와 유사함
   SliverList renderChildSliverList() {
@@ -37,12 +36,11 @@ class CustomScrollViewScreen extends StatelessWidget {
     );
   }
 
-
   // ListView.builder 생성자와 유사함
   SliverList renderChildBuilderList() {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-            (context, index) {
+        (context, index) {
           return renderContainer(
             color: rainbowColors[index % rainbowColors.length],
             index: index,
@@ -52,6 +50,44 @@ class CustomScrollViewScreen extends StatelessWidget {
       ),
     );
   }
+
+
+  // GridView.count와 유사함
+  SliverGrid renderChildSliverGrid() {
+    return SliverGrid(
+      delegate: SliverChildListDelegate(
+        numbers
+            .map(
+              (e) => renderContainer(
+                color: rainbowColors[e % rainbowColors.length],
+                index: e,
+              ),
+            )
+            .toList(),
+      ),
+      gridDelegate:
+          SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+    );
+  }
+
+
+  // GridView.builder와 유사함
+  SliverGrid renderSliverGridBuilder() {
+    return SliverGrid(
+      delegate: SliverChildBuilderDelegate(
+            (context, index) {
+          return renderContainer(
+            color: rainbowColors[index % rainbowColors.length],
+            index: index,
+          );
+        },
+      ),
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 150,
+      ),
+    );
+  }
+
 
   Widget renderContainer({
     required Color color,
