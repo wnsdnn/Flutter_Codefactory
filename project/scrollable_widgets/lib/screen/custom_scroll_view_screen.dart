@@ -10,13 +10,51 @@ class CustomScrollViewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
+        physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         slivers: [
-          SliverAppBar(
-            title: Text('Custo  mScrollViewScreen'),
-          ),
+          renderSliverAppbar(),
+          renderBuilderSliverList(),
           renderSliverGridBuilder(),
+          renderBuilderSliverList(),
         ],
       ),
+    );
+  }
+
+  // AppBar
+  SliverAppBar renderSliverAppbar() {
+    return SliverAppBar(
+      // 스크롤 했을때 리스트의 중간에도 AppBar가 내려오게 할수 있음
+      floating: true,
+
+      // 상단 고정
+      pinned: false,
+
+      // 자석 효과
+      // floating: true일때만 실행 (snap을 true로 할려면 floating을 true로 해야함)
+      snap: false,
+
+      // 맨 위에서 한계 이상으로 스크롤 했을때
+      // 남는 공간을 차지
+      stretch: true,
+
+      // 최대 크기
+      expandedHeight: 200.0,
+
+      // 최소 크기
+      collapsedHeight: 150.0,
+
+      // appbar가 늘어났을때 추가하고 싶은 것들
+      flexibleSpace: FlexibleSpaceBar(
+        title: Text('FlexibleSpace'),
+        background: Image.asset(
+          'asset/img/image_1.jpeg',
+          fit: BoxFit.cover,
+        ),
+      ),
+
+      title: Text('CustomScrollViewScreen'),
+      backgroundColor: Colors.blue,
     );
   }
 
@@ -37,7 +75,7 @@ class CustomScrollViewScreen extends StatelessWidget {
   }
 
   // ListView.builder 생성자와 유사함
-  SliverList renderChildBuilderList() {
+  SliverList renderBuilderSliverList() {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
@@ -50,7 +88,6 @@ class CustomScrollViewScreen extends StatelessWidget {
       ),
     );
   }
-
 
   // GridView.count와 유사함
   SliverGrid renderChildSliverGrid() {
@@ -70,12 +107,11 @@ class CustomScrollViewScreen extends StatelessWidget {
     );
   }
 
-
   // GridView.builder와 유사함
   SliverGrid renderSliverGridBuilder() {
     return SliverGrid(
       delegate: SliverChildBuilderDelegate(
-            (context, index) {
+        (context, index) {
           return renderContainer(
             color: rainbowColors[index % rainbowColors.length],
             index: index,
@@ -87,7 +123,6 @@ class CustomScrollViewScreen extends StatelessWidget {
       ),
     );
   }
-
 
   Widget renderContainer({
     required Color color,
