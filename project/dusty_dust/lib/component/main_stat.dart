@@ -13,12 +13,16 @@ class MainStat extends StatelessWidget {
   // 오염 수치
   final String stat;
 
+  // 너비
+  final double width;
+
   const MainStat({
     super.key,
     required this.cateogry,
     required this.imgPath,
     required this.level,
     required this.stat,
+    required this.width,
   });
 
   @override
@@ -27,27 +31,31 @@ class MainStat extends StatelessWidget {
       color: Colors.black,
     );
 
-    return Column(
-      children: [
-        Text(
-          cateogry,
-          style: ts,
-        ),
-        SizedBox(height: 8.0,),
-        Image.asset(
-          imgPath,
-          width: 50.0,
-        ),
-        SizedBox(height: 8.0,),
-        Text(
-          level,
-          style: ts,
-        ),
-        Text(
-          stat,
-          style: ts,
-        )
-      ],
+    return SizedBox(
+      width: width,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            cateogry,
+            style: ts,
+          ),
+          SizedBox(height: 8.0,),
+          Image.asset(
+            imgPath,
+            width: 50.0,
+          ),
+          SizedBox(height: 8.0,),
+          Text(
+            level,
+            style: ts,
+          ),
+          Text(
+            stat,
+            style: ts,
+          )
+        ],
+      ),
     );
   }
 }
