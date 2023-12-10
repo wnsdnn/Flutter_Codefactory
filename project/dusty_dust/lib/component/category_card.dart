@@ -18,6 +18,7 @@ class CategoryCard extends StatelessWidget {
           ),
         ),
         color: lightColor,
+        // LayoutBuilder: 현재 화면에 보이는 위젯의 크기를 알수있게 해줌
         child: LayoutBuilder(
           builder: (context, constraint) {
             final double width = constraint.maxWidth / 3;
