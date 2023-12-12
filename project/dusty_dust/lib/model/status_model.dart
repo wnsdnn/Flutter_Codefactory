@@ -40,7 +40,7 @@ class StatusModel {
   // 일산화탄소 최소치
   final double minCO;
 
-  // 이황산가스 최소치
+  // 아황산가스 최소치
   final double minSO2;
 
   StatusModel({
