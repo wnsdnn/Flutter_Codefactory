@@ -5,6 +5,7 @@ import 'package:dusty_dust/utils/data_utils.dart';
 import 'package:flutter/material.dart';
 
 class MainAppbar extends StatelessWidget {
+  final String region;
   final StatusModel status;
   final StatModel stat;
 
@@ -12,6 +13,7 @@ class MainAppbar extends StatelessWidget {
     super.key,
     required this.status,
     required this.stat,
+    required this.region,
   });
 
   @override
@@ -33,7 +35,7 @@ class MainAppbar extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  '서울',
+                  region,
                   style: ts.copyWith(
                     fontSize: 40.0,
                     fontWeight: FontWeight.w700,
