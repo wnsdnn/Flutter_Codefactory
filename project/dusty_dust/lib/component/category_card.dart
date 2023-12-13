@@ -9,11 +9,15 @@ import 'main_stat.dart';
 class CategoryCard extends StatelessWidget {
   final String region;
   final List<StatAndStatusModel> models;
+  final Color darkColor;
+  final Color lightColor;
 
   const CategoryCard({
     super.key,
     required this.region,
     required this.models,
+    required this.darkColor,
+    required this.lightColor,
   });
 
   @override
@@ -21,6 +25,7 @@ class CategoryCard extends StatelessWidget {
     return SizedBox(
       height: 160.0,
       child: MainCard(
+        backgroundColor: lightColor,
         // LayoutBuilder: 현재 화면에 보이는 위젯의 크기를 알수있게 해줌
         child: LayoutBuilder(builder: (context, constraint) {
           final double width = constraint.maxWidth / 3;
@@ -30,6 +35,7 @@ class CategoryCard extends StatelessWidget {
             children: [
               CardTitle(
                 title: '종류별 통계',
+                backgroundColor: darkColor,
               ),
               Expanded(
                 child: ListView(
