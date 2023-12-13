@@ -4,6 +4,7 @@ import 'package:dusty_dust/component/main_app_bar.dart';
 import 'package:dusty_dust/component/main_drawer.dart';
 import 'package:dusty_dust/const/colors.dart';
 import 'package:dusty_dust/const/regions.dart';
+import 'package:dusty_dust/model/stat_and_status_model.dart';
 import 'package:dusty_dust/model/stat_model.dart';
 import 'package:dusty_dust/repository/stat_repository.dart';
 import 'package:dusty_dust/utils/data_utils.dart';
@@ -23,18 +24,16 @@ class _HomeScreenState extends State<HomeScreen> {
     Map<ItemCode, List<StatModel>> stats = {};
     List<Future> futures = [];
 
-    for(ItemCode itemCode in ItemCode.values) {
+    for (ItemCode itemCode in ItemCode.values) {
       futures.add(
-          StatRepository.fetchData(
-              itemCode: itemCode
-          ),
+        StatRepository.fetchData(itemCode: itemCode),
       );
     }
 
     // 리스트 안에 Furure값이 전부 들어가게 기다리기
     final results = await Future.wait(futures);
 
-    for(int i = 0; i < results.length; i++) {
+    for (int i = 0; i < results.length; i++) {
       final key = ItemCode.values[i];
       final value = results[i];
 
@@ -57,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.of(context).pop();
         },
       ),
-      body: FutureBuilder<Map<ItemCode,List<StatModel>>>(
+      body: FutureBuilder<Map<ItemCode, List<StatModel>>>(
         future: fetchData(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -82,6 +81,20 @@ class _HomeScreenState extends State<HomeScreen> {
             itemCode: ItemCode.PM10,
           );
 
+          final ssModel = stats.keys.map((key) {
+            final value = stats[key]!;
+            final stat = value[0];
+
+            return StatAndStatusModel(
+              status: DataUtils.getStatusFromItemCodeAndValue(
+                value: stat.getLevelFromRegion(region),
+                itemCode: key,
+              ),
+              stat: stat,
+              itemCode: key,
+            );
+          }).toList();
+
           return CustomScrollView(
             slivers: [
               MainAppbar(
@@ -95,7 +108,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    CategoryCard(),
+                    CategoryCard(
+                      region: region,
+                      models: ssModel,
+                    ),
                     SizedBox(height: 16.0),
                     HourlyCard(),
                   ],

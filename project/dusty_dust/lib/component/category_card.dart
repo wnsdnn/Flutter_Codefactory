@@ -1,12 +1,20 @@
 import 'package:dusty_dust/component/card_title.dart';
 import 'package:dusty_dust/component/main_card.dart';
+import 'package:dusty_dust/model/stat_and_status_model.dart';
+import 'package:dusty_dust/utils/data_utils.dart';
 import 'package:flutter/material.dart';
 
-import '../const/colors.dart';
 import 'main_stat.dart';
 
 class CategoryCard extends StatelessWidget {
-  const CategoryCard({super.key});
+  final String region;
+  final List<StatAndStatusModel> models;
+
+  const CategoryCard({
+    super.key,
+    required this.region,
+    required this.models,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +35,27 @@ class CategoryCard extends StatelessWidget {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   physics: PageScrollPhysics(),
-                  children: List.generate(
-                    6,
-                    (index) => MainStat(
-                      cateogry: '미세먼지 $index',
-                      imgPath: 'asset/img/best.png',
-                      level: '최고',
-                      stat: '0㎍/m³',
-                      width: width,
-                    ),
-                  ),
+                  children: models
+                      .map(
+                        (model) => MainStat(
+                          cateogry: DataUtils.getItemCodeKrString(itemCode: model.itemCode),
+                          imgPath: model.status.imagePath,
+                          level: model.status.label,
+                          stat: '${model.stat.getLevelFromRegion(region)}${DataUtils.getUnitFromDataType(itemCode: model.itemCode)}',
+                          width: width,
+                        ),
+                      )
+                      .toList(),
+                  // children: List.generate(
+                  //   6,
+                  //   (index) => MainStat(
+                  //     cateogry: '미세먼지 $index',
+                  //     imgPath: 'asset/img/best.png',
+                  //     level: '최고',
+                  //     stat: '0㎍/m³',
+                  //     width: width,
+                  //   ),
+                  // ),
                 ),
               ),
             ],
