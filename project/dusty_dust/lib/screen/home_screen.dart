@@ -117,10 +117,25 @@ class _HomeScreenState extends State<HomeScreen> {
                         lightColor: status.lightColor,
                       ),
                       SizedBox(height: 16.0),
-                      HourlyCard(
-                        darkColor: status.darkColor,
-                        lightColor: status.lightColor,
+                      ...stats.keys.map(
+                        (itemKey) {
+                          final stat = stats[itemKey]!;
+
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 16.0),
+                            child: HourlyCard(
+                              darkColor: status.darkColor,
+                              lightColor: status.lightColor,
+                              category: DataUtils.getItemCodeKrString(
+                                itemCode: itemKey,
+                              ),
+                              stats: stat,
+                              region: region,
+                            ),
+                          );
+                        },
                       ),
+                      SizedBox(height: 16.0),
                     ],
                   ),
                 ),
