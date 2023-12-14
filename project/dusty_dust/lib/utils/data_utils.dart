@@ -37,13 +37,13 @@ class DataUtils {
         return '초미세먼지';
 
       case ItemCode.NO2:
-        return '미세먼지';
-
-      case ItemCode.O3:
         return '이산화질소';
 
-      case ItemCode.CO:
+      case ItemCode.O3:
         return '오존';
+
+      case ItemCode.CO:
+        return '일산화탄소';
 
       case ItemCode.SO2:
         return '아황산가스';
