@@ -18,7 +18,7 @@ class BasicAppbarTabbarScreen extends StatelessWidget {
                     icon: Icon(e.icon),
                     child: Text(
                       '${e.label}',
-                      style: TextStyle(fontSize: 13.0),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 )
