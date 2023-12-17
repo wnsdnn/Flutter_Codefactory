@@ -13,7 +13,7 @@ class TabInfo {
 const TABS = [
   TabInfo(
     icon: Icons.account_balance_outlined,
-    label: '지값',
+    label: '지갑',
   ),
   TabInfo(
     icon: Icons.alarm_add_outlined,
