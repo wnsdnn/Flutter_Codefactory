@@ -1,12 +1,11 @@
 import 'package:dusty_dust/component/card_title.dart';
 import 'package:dusty_dust/component/main_card.dart';
-import 'package:dusty_dust/model/stat_and_status_model.dart';
 import 'package:dusty_dust/model/stat_model.dart';
 import 'package:dusty_dust/utils/data_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 
-import 'main_stat.dart';
+import '../component/main_stat.dart';
 
 class CategoryCard extends StatelessWidget {
   final String region;
@@ -26,7 +25,7 @@ class CategoryCard extends StatelessWidget {
       height: 160.0,
       child: MainCard(
         backgroundColor: lightColor,
-        // LayoutBuilder: 현재 화면에 보이는 위젯의 크기를 알수있게 해줌
+        // LayoutBuilder: 현재 화면에 보이는 위젯의 크기를 알수 있게 해줌
         child: LayoutBuilder(builder: (context, constraint) {
           final double width = constraint.maxWidth / 3;
 
