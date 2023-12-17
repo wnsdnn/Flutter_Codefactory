@@ -46,6 +46,7 @@ class CategoryCard extends StatelessWidget {
                           valueListenable: Hive.box<StatModel>(itemCode.name).listenable(),
                           builder: (context, box, widget) {
                             final stat = box.values.last as StatModel;
+                            
                             final status = DataUtils.getStatusFromItemCodeAndValue(
                                 value: stat.getLevelFromRegion(region),
                                 itemCode: itemCode

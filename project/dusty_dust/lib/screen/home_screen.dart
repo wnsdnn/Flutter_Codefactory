@@ -26,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     scrollController.addListener(scrollListener);
+    fetchData();
   }
 
   @override
@@ -36,6 +37,29 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> fetchData() async {
+    // utc기준으로 대한민국의 날짜는 9시간을 추가해줘야함
+    final now = DateTime.now().toUtc().add(Duration(hours: 9));
+    final fetchTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      now.hour,
+    );
+
+    // 가장 최신 데이터
+    final box = Hive.box<StatModel>(ItemCode.PM10.name);
+    final recent = box.values.last as StatModel;
+
+    print(recent.dataTime);
+    print(fetchTime);
+
+    // isAtSameMomentAs - 같은 순간이냐 아니냐를 반환
+    if(recent.dataTime.isAtSameMomentAs(fetchTime)) {
+      print('이미 최신 데이터가 있습니다.');
+      return;
+    }
+
+
     List<Future> futures = [];
 
     for (ItemCode itemCode in ItemCode.values) {
@@ -58,6 +82,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
       for (StatModel stat in value) {
         box.put(stat.dataTime.toString(), stat);
+      }
+
+      final allKeys = box.keys.toList();
+
+      if(allKeys.length > 24) {
+        // stat = 시작 index
+        // end = 끝 index
+        // ['red', 'orange', 'yellow', 'green', 'blue']
+        // .sublist(1, 3)
+        // ['orange', 'yellow']
+        final deleteKeys = allKeys.sublist(0, allKeys.length - 24);
+
+        box.deleteAll(deleteKeys);
       }
     }
   }
