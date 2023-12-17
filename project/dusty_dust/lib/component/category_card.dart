@@ -8,14 +8,12 @@ import 'main_stat.dart';
 
 class CategoryCard extends StatelessWidget {
   final String region;
-  final List<StatAndStatusModel> models;
   final Color darkColor;
   final Color lightColor;
 
   const CategoryCard({
     super.key,
     required this.region,
-    required this.models,
     required this.darkColor,
     required this.lightColor,
   });

@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  Future<Map<ItemCode, List<StatModel>>> fetchData() async {
+  Future<void> fetchData() async {
     List<Future> futures = [];
 
     for (ItemCode itemCode in ItemCode.values) {
@@ -61,19 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
         box.put(stat.dataTime.toString(), stat);
       }
     }
-
-    return ItemCode.values.fold<Map<ItemCode, List<StatModel>>>(
-      {},
-      (previousValue, itemCode) {
-        final box = Hive.box<StatModel>(itemCode.name);
-
-        previousValue.addAll({
-          itemCode: box.values.toList(),
-        });
-
-        return previousValue;
-      },
-    );
   }
 
   scrollListener() {
@@ -88,49 +75,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<ItemCode, List<StatModel>>>(
-      future: fetchData(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          // 에러가 있을때
-          return Scaffold(
-            body: Center(
-              child: Text('에러가 있습니다.'),
-            ),
-          );
-        }
+    return ValueListenableBuilder<Box>(
+      valueListenable: Hive.box(ItemCode.PM10.name).listenable(),
+      builder: (context, box, weiget) {
+        // PM10 (미세먼지)
+        // box.values.toList().last
+        final recentStat = box.values.toList().last as StatModel;
 
-        if (!snapshot.hasData) {
-          // 로딩상태
-          return Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-
-        Map<ItemCode, List<StatModel>> stats = snapshot.data!;
-        StatModel pm10RecentStat = stats[ItemCode.PM10]![0];
-
-        // 미세먼지 최근 데이터의 현재 상태
         final status = DataUtils.getStatusFromItemCodeAndValue(
-          value: pm10RecentStat.seoul,
+          value: recentStat.getLevelFromRegion(region),
           itemCode: ItemCode.PM10,
         );
-
-        final ssModel = stats.keys.map((key) {
-          final value = stats[key]!;
-          final stat = value[0];
-
-          return StatAndStatusModel(
-            status: DataUtils.getStatusFromItemCodeAndValue(
-              value: stat.getLevelFromRegion(region),
-              itemCode: key,
-            ),
-            stat: stat,
-            itemCode: key,
-          );
-        }).toList();
 
         return Scaffold(
           drawer: MainDrawer(
@@ -150,10 +105,10 @@ class _HomeScreenState extends State<HomeScreen> {
               controller: scrollController,
               slivers: [
                 MainAppbar(
-                  stat: pm10RecentStat,
+                  stat: recentStat,
                   status: status,
                   region: region,
-                  dateTime: pm10RecentStat.dataTime,
+                  dateTime: recentStat.dataTime,
                   isExpanded: isExpanded,
                 ),
 
@@ -164,25 +119,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       CategoryCard(
                         region: region,
-                        models: ssModel,
                         darkColor: status.darkColor,
                         lightColor: status.lightColor,
                       ),
                       SizedBox(height: 16.0),
-                      ...stats.keys.map(
-                        (itemKey) {
-                          final stat = stats[itemKey]!;
+                      ...ItemCode.values.map(
+                            (itemCode) {
 
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 16.0),
                             child: HourlyCard(
                               darkColor: status.darkColor,
                               lightColor: status.lightColor,
-                              category: DataUtils.getItemCodeKrString(
-                                itemCode: itemKey,
-                              ),
-                              stats: stat,
                               region: region,
+                              itemCode: itemCode,
                             ),
                           );
                         },
