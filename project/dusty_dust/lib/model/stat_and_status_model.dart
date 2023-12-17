@@ -14,5 +14,4 @@ class StatAndStatusModel {
     required this.itemCode,
   });
 
-
 }
