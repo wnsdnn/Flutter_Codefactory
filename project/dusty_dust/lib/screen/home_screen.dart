@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<Box>(
       valueListenable: Hive.box(ItemCode.PM10.name).listenable(),
-      builder: (context, box, weiget) {
+      builder: (context, box, widget) {
         // PM10 (미세먼지)
         // box.values.toList().last
         final recentStat = box.values.toList().last as StatModel;
