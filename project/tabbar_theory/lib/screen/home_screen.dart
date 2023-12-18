@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tabbar_theory/screen/appbar_using_controller.dart';
 import 'package:tabbar_theory/screen/basic_appbar_tabbar_screen.dart';
+import 'package:tabbar_theory/screen/bottom_navigation_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -45,6 +46,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 },
                 child: Text('Appbar Using Controller'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return BottomNavigationBarScreen();
+                      },
+                    ),
+                  );
+                },
+                child: Text('Bottom Navigation Bar Screen'),
               ),
             ],
           ),
