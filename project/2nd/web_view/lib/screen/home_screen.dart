@@ -11,7 +11,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold( 
+    return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.orange,
         title: Text(
@@ -20,6 +20,17 @@ class HomeScreen extends StatelessWidget {
             color: Colors.white
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              controller.loadRequest(homeUrl);
+            },
+            icon: Icon(
+              Icons.home,
+              color: Colors.white,
+            ),
+          ),
+        ],
         centerTitle: true,
       ),
       body: WebViewWidget(
