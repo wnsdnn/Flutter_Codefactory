@@ -5,7 +5,10 @@ import 'package:webview_flutter/webview_flutter.dart';
 final homeUrl = Uri.parse('https://wnsdnn.github.io');
 
 class HomeScreen extends StatelessWidget {
-  WebViewController controller = WebViewController()..loadRequest(homeUrl);
+  WebViewController controller = WebViewController()
+    // WebView에 JavaScriptMode 활성화
+    ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    ..loadRequest(homeUrl);
 
   HomeScreen({super.key});
 
