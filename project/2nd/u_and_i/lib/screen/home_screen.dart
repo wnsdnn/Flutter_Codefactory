@@ -29,11 +29,30 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class _TopPart extends StatelessWidget {
+class _TopPart extends StatefulWidget {
+
   const _TopPart({super.key});
 
   @override
+  State<_TopPart> createState() => _TopPartState();
+}
+
+class _TopPartState extends State<_TopPart> {
+  DateTime selectedDate = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+  );
+
+  @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final maximumDate = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    );
+
     return Expanded(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -56,7 +75,7 @@ class _TopPart extends StatelessWidget {
                     fontSize: 30.0),
               ),
               Text(
-                '2021.12.27',
+                '${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}',
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: 'sunflower',
@@ -79,9 +98,13 @@ class _TopPart extends StatelessWidget {
                       color: Colors.white,
                       height: 300.0,
                       child: CupertinoDatePicker(
+                        initialDateTime: selectedDate,
+                        maximumDate: maximumDate,
                         mode: CupertinoDatePickerMode.date,
                         onDateTimeChanged: (date) {
-                          print(date);
+                          setState(() {
+                            this.selectedDate = date;
+                          });
                         },
                       ),
                     ),
@@ -95,7 +118,13 @@ class _TopPart extends StatelessWidget {
             ),
           ),
           Text(
-            'D+1',
+            'D+${
+                DateTime(
+                  now.year,
+                  now.month,
+                  now.day,
+                ).difference(selectedDate).inDays + 1
+            }',
             style: TextStyle(
               color: Colors.white,
               fontFamily: 'sunflower',
