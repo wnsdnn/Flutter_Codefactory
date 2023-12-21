@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -50,7 +51,9 @@ class _TopPart extends StatelessWidget {
               Text(
                 '우리 처음 만난날',
                 style: TextStyle(
-                    color: Colors.white, fontFamily: 'sunflower', fontSize: 30.0),
+                    color: Colors.white,
+                    fontFamily: 'sunflower',
+                    fontSize: 30.0),
               ),
               Text(
                 '2021.12.27',
@@ -64,7 +67,28 @@ class _TopPart extends StatelessWidget {
           ),
           IconButton(
             iconSize: 60.0,
-            onPressed: () {},
+            onPressed: () {
+              showCupertinoDialog(
+                // 다이얼로그 배경 누르면 닫히게 해줌
+                barrierDismissible: true,
+                context: context,
+                builder: (context) {
+                  return Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      color: Colors.white,
+                      height: 300.0,
+                      child: CupertinoDatePicker(
+                        mode: CupertinoDatePickerMode.date,
+                        onDateTimeChanged: (date) {
+                          print(date);
+                        },
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
             icon: Icon(
               Icons.favorite,
               color: Colors.red,
@@ -95,4 +119,3 @@ class _BottomPart extends StatelessWidget {
     );
   }
 }
-
