@@ -9,6 +9,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  DateTime selectedDate = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +25,10 @@ class _HomeScreenState extends State<HomeScreen> {
           width: MediaQuery.of(context).size.width,
           child: Column(
             children: [
-              _TopPart(),
+              _TopPart(
+                selectedDate: selectedDate,
+                onPressed: onHeartPressed,
+              ),
               _BottomPart(),
             ],
           ),
@@ -27,31 +36,55 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  void onHeartPressed() {
+    final DateTime now = DateTime.now();
+
+    showCupertinoDialog(
+      // 다이얼로그 배경 누르면 닫히게 해줌
+      barrierDismissible: true,
+      context: context,
+      builder: (context) {
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            color: Colors.white,
+            height: 300.0,
+            child: CupertinoDatePicker(
+              initialDateTime: selectedDate,
+              maximumDate: DateTime(
+                now.year,
+                now.month,
+                now.day,
+              ),
+              mode: CupertinoDatePickerMode.date,
+              onDateTimeChanged: (date) {
+                setState(() {
+                  selectedDate = date;
+                });
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 
-class _TopPart extends StatefulWidget {
 
-  const _TopPart({super.key});
+class _TopPart extends StatelessWidget {
+  final DateTime selectedDate;
+  final VoidCallback onPressed;
 
-  @override
-  State<_TopPart> createState() => _TopPartState();
-}
-
-class _TopPartState extends State<_TopPart> {
-  DateTime selectedDate = DateTime(
-    DateTime.now().year,
-    DateTime.now().month,
-    DateTime.now().day,
-  );
+  _TopPart({
+    super.key,
+    required this.selectedDate,
+    required this.onPressed
+  });
 
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
-    final maximumDate = DateTime(
-      now.year,
-      now.month,
-      now.day,
-    );
 
     return Expanded(
       child: Column(
@@ -86,45 +119,18 @@ class _TopPartState extends State<_TopPart> {
           ),
           IconButton(
             iconSize: 60.0,
-            onPressed: () {
-              showCupertinoDialog(
-                // 다이얼로그 배경 누르면 닫히게 해줌
-                barrierDismissible: true,
-                context: context,
-                builder: (context) {
-                  return Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      color: Colors.white,
-                      height: 300.0,
-                      child: CupertinoDatePicker(
-                        initialDateTime: selectedDate,
-                        maximumDate: maximumDate,
-                        mode: CupertinoDatePickerMode.date,
-                        onDateTimeChanged: (date) {
-                          setState(() {
-                            this.selectedDate = date;
-                          });
-                        },
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
+            onPressed: onPressed,
             icon: Icon(
               Icons.favorite,
               color: Colors.red,
             ),
           ),
           Text(
-            'D+${
-                DateTime(
+            'D+${DateTime(
                   now.year,
                   now.month,
                   now.day,
-                ).difference(selectedDate).inDays + 1
-            }',
+                ).difference(selectedDate).inDays + 1}',
             style: TextStyle(
               color: Colors.white,
               fontFamily: 'sunflower',
