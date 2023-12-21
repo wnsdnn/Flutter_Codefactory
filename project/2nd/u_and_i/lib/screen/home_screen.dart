@@ -71,19 +71,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-
 class _TopPart extends StatelessWidget {
   final DateTime selectedDate;
   final VoidCallback onPressed;
 
-  _TopPart({
-    super.key,
-    required this.selectedDate,
-    required this.onPressed
-  });
+  _TopPart({super.key, required this.selectedDate, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
+    // 가장 가까이 있는 Theme 가져오기
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
     final now = DateTime.now();
 
     return Expanded(
@@ -92,28 +90,17 @@ class _TopPart extends StatelessWidget {
         children: [
           Text(
             'U&I',
-            style: TextStyle(
-                color: Colors.white,
-                fontFamily: 'parisienne',
-                fontSize: 80.0,
-                fontWeight: FontWeight.w700),
+            style: textTheme.headline1,
           ),
           Column(
             children: [
               Text(
                 '우리 처음 만난날',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'sunflower',
-                    fontSize: 30.0),
+                style: textTheme.bodyText1,
               ),
               Text(
                 '${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'sunflower',
-                  fontSize: 20.0,
-                ),
+                style: textTheme.bodyText2,
               )
             ],
           ),
@@ -131,12 +118,7 @@ class _TopPart extends StatelessWidget {
                   now.month,
                   now.day,
                 ).difference(selectedDate).inDays + 1}',
-            style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'sunflower',
-              fontWeight: FontWeight.w700,
-              fontSize: 50.0,
-            ),
+            style: textTheme.headline2,
           )
         ],
       ),
