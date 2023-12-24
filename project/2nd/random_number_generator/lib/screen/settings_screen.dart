@@ -10,7 +10,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  double maxNumber = 10000;
+  double maxNumber = 1000;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pop(maxNumber.toInt());
+                  },
                   style: ElevatedButton.styleFrom(
                     primary: RED_COLOR,
                   ),
