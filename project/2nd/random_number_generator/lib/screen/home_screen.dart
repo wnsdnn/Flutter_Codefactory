@@ -45,19 +45,26 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [123, 456, 789]
+                        .asMap()
+                        .entries
                         .map(
-                          (nums) => Row(
-                            children: nums
-                                .toString()
-                                .split('')
-                                .map(
-                                  (num) => Image.asset(
-                                    'asset/img/$num.png',
-                                    width: 50.0,
-                                    height: 70.0,
-                                  ),
-                                )
-                                .toList(),
+                          (nums) => Padding(
+                            padding: EdgeInsets.only(
+                              bottom: nums.key == 2 ? 0 : 16.0,
+                            ),
+                            child: Row(
+                              children: nums.value
+                                  .toString()
+                                  .split('')
+                                  .map(
+                                    (num) => Image.asset(
+                                      'asset/img/$num.png',
+                                      width: 50.0,
+                                      height: 70.0,
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
                           ),
                         )
                         .toList(),
