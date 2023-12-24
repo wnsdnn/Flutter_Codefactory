@@ -44,11 +44,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('123'),
-                      Text('456'),
-                      Text('789'),
-                    ],
+                    children: [123, 456, 789]
+                        .map(
+                          (nums) => Row(
+                            children: nums
+                                .toString()
+                                .split('')
+                                .map(
+                                  (num) => Image.asset(
+                                    'asset/img/$num.png',
+                                    width: 50.0,
+                                    height: 70.0,
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        )
+                        .toList(),
                   ),
                 ),
               ),
