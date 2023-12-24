@@ -20,7 +20,10 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: PRIMARY_COLOR,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16.0,
+            vertical: 8.0,
+          ),
           child: Column(
             children: [
               _Header(),
