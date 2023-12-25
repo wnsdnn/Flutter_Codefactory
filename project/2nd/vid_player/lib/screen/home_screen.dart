@@ -1,24 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  XFile? video;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: getBoxDecoration(),
-        width: MediaQuery.of(context).size.width,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _Logo(),
-            SizedBox(height: 30.0),
-            _AppName(),
-          ],
-        ),
+      body: video == null ? renderEmpty() : renderVideo(),
+    );
+  }
+
+  Widget renderVideo() {
+    return Center(
+      child: Text('video'),
+    );
+  }
+
+
+  Widget renderEmpty() {
+    return Container(
+      decoration: getBoxDecoration(),
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _Logo(
+            onTap: onLogoTap,
+          ),
+          SizedBox(height: 30.0),
+          _AppName(),
+        ],
       ),
     );
+  }
+
+  void onLogoTap() async {
+    final video = await ImagePicker().pickVideo(
+      source: ImageSource.gallery,
+    );
+
+    if(video != null) {
+      setState(() {
+        this.video = video;
+      });
+    }
   }
 
   BoxDecoration getBoxDecoration() {
@@ -36,11 +69,19 @@ class HomeScreen extends StatelessWidget {
 }
 
 class _Logo extends StatelessWidget {
-  const _Logo({super.key});
+  final VoidCallback onTap;
+
+  const _Logo({
+    super.key,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset('asset/image/logo.png');
+    return GestureDetector(
+      onTap: onTap,
+      child: Image.asset('asset/image/logo.png'),
+    );
   }
 }
 
@@ -72,5 +113,3 @@ class _AppName extends StatelessWidget {
     );
   }
 }
-
-
