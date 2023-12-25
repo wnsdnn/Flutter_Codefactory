@@ -21,6 +21,19 @@ class RouteOneScreen extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () {
+            // 해당 페이지 뒤에 페이지 유뮤를 반환
+            print(Navigator.of(context).canPop());
+          },
+          child: Text('Can Pop'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).maybePop();
+          },
+          child: Text('Maybe Pop'),
+        ),
+        ElevatedButton(
+          onPressed: () {
             Navigator.of(context).pop(456);
           },
           child: Text('Pop'),
