@@ -11,12 +11,18 @@ class HomeScreen extends StatelessWidget {
       title: 'Home Screen',
       children: [
         ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) {
-                return RouteOneScreen();
-              },)
+          onPressed: () async {
+            final result = await Navigator.of(context).push<int>(
+              MaterialPageRoute(
+                builder: (context) {
+                  return RouteOneScreen(
+                    number: 123,
+                  );
+                },
+              ),
             );
+
+            print(result);
           },
           child: Text('Push'),
         ),
