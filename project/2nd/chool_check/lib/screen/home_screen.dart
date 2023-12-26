@@ -21,6 +21,16 @@ class _HomeScreenState extends State<HomeScreen> {
     zoom: 15,
   );
 
+  static final double distance = 100;
+  static final Circle circle = Circle(
+    circleId: CircleId('circle'),
+    center: companyLatLng,
+    fillColor: Colors.blue.withOpacity(0.5),
+    radius: distance,
+    strokeColor: Colors.blue,
+    strokeWidth: 1,
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,19 +38,19 @@ class _HomeScreenState extends State<HomeScreen> {
       body: FutureBuilder<String>(
         future: checkPermission(),
         builder: (context, snapshot) {
-
-          if(snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
             );
           }
 
           // 위치권한이 허가되었을때
-          if(snapshot.data == '위치 권한이 허가되었습니다.') {
+          if (snapshot.data == '위치 권한이 허가되었습니다.') {
             return Column(
               children: [
                 _CustomGoogleMap(
                   initialPosition: initialPosition,
+                  circle: circle,
                 ),
                 _ChoolCheckButton(),
               ],
@@ -51,7 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
           return Center(
             child: Text(snapshot.data.toString()),
           );
-
         },
       ),
     );
@@ -61,26 +70,24 @@ class _HomeScreenState extends State<HomeScreen> {
     // 위치권한이 설정되었는지 확인
     final isLocationEnabled = await Geolocator.isLocationServiceEnabled();
 
-    if(!isLocationEnabled) {
+    if (!isLocationEnabled) {
       return '위치 서비스를 활성화 해주세요.';
     }
 
     LocationPermission checkedPermission = await Geolocator.checkPermission();
 
-    if(checkedPermission == LocationPermission.denied) {
+    if (checkedPermission == LocationPermission.denied) {
       checkedPermission = await Geolocator.requestPermission();
 
-      if(checkedPermission == LocationPermission.denied) {
+      if (checkedPermission == LocationPermission.denied) {
         return '위치 권한을 허가해주세요.';
       }
-
-    } else if(checkedPermission == LocationPermission.deniedForever) {
+    } else if (checkedPermission == LocationPermission.deniedForever) {
       return '앱의 위치 권한을 세팅에서 허가해주세요.';
     }
 
     return '위치 권한이 허가되었습니다.';
   }
-
 
   AppBar renderAppBar() {
     return AppBar(
@@ -98,10 +105,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class _CustomGoogleMap extends StatelessWidget {
   final CameraPosition initialPosition;
+  final Circle circle;
 
   const _CustomGoogleMap({
     super.key,
     required this.initialPosition,
+    required this.circle,
   });
 
   @override
@@ -109,8 +118,13 @@ class _CustomGoogleMap extends StatelessWidget {
     return Expanded(
       flex: 2,
       child: GoogleMap(
-        initialCameraPosition: initialPosition,
         mapType: MapType.normal,
+        initialCameraPosition: initialPosition,
+        myLocationEnabled: true,
+        myLocationButtonEnabled: false,
+        circles: Set.from([
+          circle,
+        ]),
       ),
     );
   }
@@ -126,4 +140,3 @@ class _ChoolCheckButton extends StatelessWidget {
     );
   }
 }
-
