@@ -22,13 +22,34 @@ class _HomeScreenState extends State<HomeScreen> {
   );
 
   static final double distance = 100;
-  static final Circle circle = Circle(
-    circleId: CircleId('circle'),
+  static final Circle withinDistanceCircle = Circle(
+    circleId: CircleId('withinDistanceCircle'),
     center: companyLatLng,
     fillColor: Colors.blue.withOpacity(0.5),
     radius: distance,
     strokeColor: Colors.blue,
     strokeWidth: 1,
+  );
+  static final Circle notWithinDistanceCircle = Circle(
+    circleId: CircleId('notWithinDistanceCircle'),
+    center: companyLatLng,
+    fillColor: Colors.red.withOpacity(0.5),
+    radius: distance,
+    strokeColor: Colors.red,
+    strokeWidth: 1,
+  );
+  static final Circle checkDoneCircle = Circle(
+    circleId: CircleId('checkDoneCircle'),
+    center: companyLatLng,
+    fillColor: Colors.green.withOpacity(0.5),
+    radius: distance,
+    strokeColor: Colors.green,
+    strokeWidth: 1,
+  );
+
+  static final Marker marker = Marker(
+    markerId: MarkerId('marker'),
+    position: companyLatLng,
   );
 
   @override
@@ -50,7 +71,8 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 _CustomGoogleMap(
                   initialPosition: initialPosition,
-                  circle: circle,
+                  circle: withinDistanceCircle,
+                  marker: marker,
                 ),
                 _ChoolCheckButton(),
               ],
@@ -106,11 +128,13 @@ class _HomeScreenState extends State<HomeScreen> {
 class _CustomGoogleMap extends StatelessWidget {
   final CameraPosition initialPosition;
   final Circle circle;
+  final Marker marker;
 
   const _CustomGoogleMap({
     super.key,
     required this.initialPosition,
     required this.circle,
+    required this.marker,
   });
 
   @override
@@ -124,6 +148,9 @@ class _CustomGoogleMap extends StatelessWidget {
         myLocationButtonEnabled: false,
         circles: Set.from([
           circle,
+        ]),
+        markers: Set.from([
+          marker,
         ]),
       ),
     );
