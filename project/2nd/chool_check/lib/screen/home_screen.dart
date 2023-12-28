@@ -11,6 +11,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool choolCheckDone = false;
+  GoogleMapController? mapController;
 
   // latitude - 위도, longitude - 경도
   static final LatLng companyLatLng = LatLng(
@@ -102,6 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ? withinDistanceCircle
                                 : notWithinDistanceCircle,
                         marker: marker,
+                        onMapCreated: onMapCreated,
                       ),
                       _ChoolCheckButton(
                         isWithinRange: isWithinRange,
@@ -143,6 +145,10 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return '위치 권한이 허가되었습니다.';
+  }
+
+  void onMapCreated(GoogleMapController controller) {
+    mapController = controller;
   }
 
   void onChoolCheckPressed() async {
@@ -187,6 +193,30 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       backgroundColor: Colors.white,
+      actions: [
+        IconButton(
+          onPressed: () async {
+            if (mapController == null) {
+              return;
+            }
+
+            final location = await Geolocator.getCurrentPosition();
+
+            mapController!.animateCamera(
+              CameraUpdate.newLatLng(
+                LatLng(
+                  location.latitude,
+                  location.longitude,
+                ),
+              ),
+            );
+          },
+          color: Colors.blue,
+          icon: Icon(
+            Icons.my_location,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -195,12 +225,14 @@ class _CustomGoogleMap extends StatelessWidget {
   final CameraPosition initialPosition;
   final Circle circle;
   final Marker marker;
+  final MapCreatedCallback onMapCreated;
 
   const _CustomGoogleMap({
     super.key,
     required this.initialPosition,
     required this.circle,
     required this.marker,
+    required this.onMapCreated,
   });
 
   @override
@@ -218,6 +250,7 @@ class _CustomGoogleMap extends StatelessWidget {
         markers: Set.from([
           marker,
         ]),
+        onMapCreated: onMapCreated,
       ),
     );
   }
