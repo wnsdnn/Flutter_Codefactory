@@ -1,17 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <application
-        android:label="chool_check"
+        android:label="future_and_stream_builder"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-
-        <!-- 이부분에 구글지도 키값 입력해야함 -->
-        <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value=""/>
-
         <activity
             android:name=".MainActivity"
             android:exported="true"
