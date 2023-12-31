@@ -20,6 +20,19 @@ class _CamScreenState extends State<CamScreen> {
   int? otherUid;
 
   @override
+  void dispose() async {
+    if(engine != null) {
+      await engine!.leaveChannel(
+        options: LeaveChannelOptions(),
+      );
+      engine!.release();
+    }
+
+    super.dispose();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
