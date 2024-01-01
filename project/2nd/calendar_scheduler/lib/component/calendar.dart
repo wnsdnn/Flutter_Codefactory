@@ -11,6 +11,7 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
   DateTime? selectedDay;
+  DateTime focusedDay = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,8 @@ class _CalendarState extends State<Calendar> {
     );
 
     return TableCalendar(
-      focusedDay: DateTime.now(),
+      locale: 'ko_KR',
+      focusedDay: focusedDay,
       firstDay: DateTime(1800),
       lastDay: DateTime(3000),
       headerStyle: HeaderStyle(
@@ -54,12 +56,15 @@ class _CalendarState extends State<Calendar> {
         selectedTextStyle: defaultTextStyle.copyWith(
           color: PRIMARY_COLOR,
         ),
+        outsideDecoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+        ),
       ),
       // 캘린더 이벤트
       onDaySelected: (selectedDay, focusedDay) {
-        print(selectedDay);
         setState(() {
           this.selectedDay = selectedDay;
+          this.focusedDay = selectedDay;
         });
       },
       selectedDayPredicate: (day) {
