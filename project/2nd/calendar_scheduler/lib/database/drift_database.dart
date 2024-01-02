@@ -21,9 +21,9 @@ part 'drift_database.g.dart';
 class LocalDatabase extends _$LocalDatabase {
   LocalDatabase() : super(_openConnection());
 
-  Future<int> createSchedule(SchedulesCompanion data) => into(schedules).insert(data);
+  Future<int> insertSchedule(SchedulesCompanion data) => into(schedules).insert(data);
 
-  Future<int> createCategoryColor(CategoryColorsCompanion data) => into(categoryColors).insert(data);
+  Future<int> insertCategoryColor(CategoryColorsCompanion data) => into(categoryColors).insert(data);
 
   // Future<List<Schedules>> getSchedules() => select(schedules).get();
 

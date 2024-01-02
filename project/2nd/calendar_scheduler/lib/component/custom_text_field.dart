@@ -34,7 +34,17 @@ class CustomTextField extends StatelessWidget {
   }
 
   Widget renderTextField() {
-    return TextField(
+    // Form
+    return TextFormField(
+      // null이 return 되면 에러가 없다.
+      // 에러가 있으면 에러를 String 값으로 리턴해준다.
+      validator: (value) {
+        if(value == null || value.isEmpty) {
+          return '값을 입력해주세요';
+        }
+
+        return null;
+      },
       cursorColor: Colors.grey,
       maxLines: isTime ? 1 : null,
       expands: !isTime, // 이 부분 true로 해줘야 TextField 끝까지 늘어남

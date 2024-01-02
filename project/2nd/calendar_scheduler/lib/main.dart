@@ -36,7 +36,7 @@ void main() async {
 
   if (colors.isEmpty) {
     for (String hexCode in DEFAULT_COLORS) {
-      await database.createCategoryColor(
+      await database.insertCategoryColor(
         CategoryColorsCompanion(
           hexCode: Value(hexCode),
         ),
