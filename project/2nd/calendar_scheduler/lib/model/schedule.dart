@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 
 class Schedules extends Table {
   // PRIMARY KEY
-  IntColumn get id => integer()();
+  IntColumn get id => integer().autoIncrement()();
 
   // 내용
   TextColumn get cotnent => text()();
@@ -20,5 +20,6 @@ class Schedules extends Table {
   IntColumn get colorId => integer()();
 
   // 생성날짜
-  DateTimeColumn get createdAt => dateTime()();
+  // 얜 값 넣어줄수 있음
+  DateTimeColumn get createdAt => dateTime().clientDefault(() => DateTime.now())();
 }
