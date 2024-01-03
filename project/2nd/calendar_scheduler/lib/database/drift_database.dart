@@ -21,14 +21,17 @@ part 'drift_database.g.dart';
 class LocalDatabase extends _$LocalDatabase {
   LocalDatabase() : super(_openConnection());
 
-  Future<int> insertSchedule(SchedulesCompanion data) => into(schedules).insert(data);
+  Future<int> insertSchedule(SchedulesCompanion data) =>
+      into(schedules).insert(data);
 
-  Future<int> insertCategoryColor(CategoryColorsCompanion data) => into(categoryColors).insert(data);
+  Future<int> insertCategoryColor(CategoryColorsCompanion data) =>
+      into(categoryColors).insert(data);
 
-  Stream<List<Schedule>> watchSchedules() => select(schedules).watch();
+  Stream<List<Schedule>> watchSchedules(DateTime date) =>
+      (select(schedules)..where((tbl) => tbl.date.equals(date))).watch();
 
-  Future<List<CategoryColor>> getCategoryColors() => select(categoryColors).get();
-
+  Future<List<CategoryColor>> getCategoryColors() =>
+      select(categoryColors).get();
 
   @override
   int get schemaVersion => 1;

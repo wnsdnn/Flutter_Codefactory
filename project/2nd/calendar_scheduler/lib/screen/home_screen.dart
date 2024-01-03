@@ -93,33 +93,33 @@ class _ScheduleList extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: StreamBuilder<List<Schedule>>(
-            stream: GetIt.I<LocalDatabase>().watchSchedules(),
+            stream: GetIt.I<LocalDatabase>().watchSchedules(selectedDate),
             builder: (context, snapshot) {
-              print('---------- original date -------------');
-              print(snapshot.data);
 
-              List<Schedule> schedule = [];
-
-              if (snapshot.hasData) {
-                schedule = snapshot.data!
-                    .where((element) => element.date == selectedDate)
-                    .toList();
+              if(!snapshot.hasData) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
               }
 
-              print('---------- filtered date -------------');
-              print(selectedDate);
-              print(schedule);
+              if(snapshot.hasData && snapshot.data!.isEmpty) {
+                return Center(
+                  child: Text('스케줄이 없습니다.'),
+                );
+              }
 
               return ListView.separated(
-                itemCount: 10,
+                itemCount: snapshot.data!.length,
                 separatorBuilder: (context, index) {
                   return SizedBox(height: 8.0);
                 },
                 itemBuilder: (context, index) {
+                  final schedule = snapshot.data![index];
+
                   return ScheduleCard(
-                    startTime: 8,
-                    endTime: 9,
-                    content: '프로그래밍 공부하기',
+                    startTime: schedule.startTime,
+                    endTime: schedule.endTime,
+                    content: schedule.cotnent,
                     color: Colors.red,
                   );
                 },

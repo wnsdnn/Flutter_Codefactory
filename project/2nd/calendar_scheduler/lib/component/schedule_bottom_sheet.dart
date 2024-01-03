@@ -22,6 +22,8 @@ class ScheduleBottomSheet extends StatefulWidget {
 class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
   final GlobalKey<FormState> formKey = GlobalKey();
 
+
+
   int? startTime;
   int? endTime;
   String? content;
@@ -33,6 +35,7 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
     return GestureDetector(
+
       onTap: () {
         // 포커스 옮기기
         // FocusNode()로 설정해놔서 포커스 없어짐
@@ -119,7 +122,7 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
       
-      final key = await GetIt.I<LocalDatabase>().insertSchedule(
+      await GetIt.I<LocalDatabase>().insertSchedule(
         SchedulesCompanion(
           date: Value(widget.selectdDate),
           startTime: Value(startTime!),
