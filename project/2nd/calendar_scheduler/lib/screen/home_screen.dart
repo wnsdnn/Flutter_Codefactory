@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  DateTime selectedDay = DateTime(
+  DateTime selectedDate = DateTime.utc(
     DateTime.now().year,
     DateTime.now().month,
     DateTime.now().day,
@@ -30,17 +30,19 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             Calendar(
-              selectedDay: selectedDay,
+              selectedDay: selectedDate,
               focusedDay: focusedDay,
               onDaySelected: onDaySelected,
             ),
             SizedBox(height: 8.0),
             TodayBanner(
-              selectdDay: selectedDay,
+              selectdDay: selectedDate,
               scheduleCount: 3,
             ),
             SizedBox(height: 8.0),
-            _ScheduleList(),
+            _ScheduleList(
+              selectedDate: selectedDate,
+            ),
           ],
         ),
       ),
@@ -56,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
           context: context,
           builder: (context) {
             return ScheduleBottomSheet(
-              selectdDate: selectedDay,
+              selectdDate: selectedDate,
             );
           },
         );
@@ -71,14 +73,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   onDaySelected(selectedDay, focusedDay) {
     setState(() {
-      this.selectedDay = selectedDay;
+      this.selectedDate = selectedDay;
       this.focusedDay = selectedDay;
     });
   }
 }
 
 class _ScheduleList extends StatelessWidget {
-  const _ScheduleList({super.key});
+  final DateTime selectedDate;
+
+  const _ScheduleList({
+    super.key,
+    required this.selectedDate,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -86,26 +93,38 @@ class _ScheduleList extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: StreamBuilder<List<Schedule>>(
-          stream: GetIt.I<LocalDatabase>().watchSchedules(),
-          builder: (context, snapshot) {
-            print(snapshot.data);
+            stream: GetIt.I<LocalDatabase>().watchSchedules(),
+            builder: (context, snapshot) {
+              print('---------- original date -------------');
+              print(snapshot.data);
 
-            return ListView.separated(
-              itemCount: 10,
-              separatorBuilder: (context, index) {
-                return SizedBox(height: 8.0);
-              },
-              itemBuilder: (context, index) {
-                return ScheduleCard(
-                  startTime: 8,
-                  endTime: 9,
-                  content: '프로그래밍 공부하기',
-                  color: Colors.red,
-                );
-              },
-            );
-          }
-        ),
+              List<Schedule> schedule = [];
+
+              if (snapshot.hasData) {
+                schedule = snapshot.data!
+                    .where((element) => element.date == selectedDate)
+                    .toList();
+              }
+
+              print('---------- filtered date -------------');
+              print(selectedDate);
+              print(schedule);
+
+              return ListView.separated(
+                itemCount: 10,
+                separatorBuilder: (context, index) {
+                  return SizedBox(height: 8.0);
+                },
+                itemBuilder: (context, index) {
+                  return ScheduleCard(
+                    startTime: 8,
+                    endTime: 9,
+                    content: '프로그래밍 공부하기',
+                    color: Colors.red,
+                  );
+                },
+              );
+            }),
       ),
     );
   }
