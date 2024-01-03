@@ -4,6 +4,7 @@ import 'package:calendar_scheduler/component/schedule_card.dart';
 import 'package:calendar_scheduler/component/today_banner.dart';
 import 'package:calendar_scheduler/const/color.dart';
 import 'package:calendar_scheduler/database/drift_database.dart';
+import 'package:calendar_scheduler/model/schedule_with_color.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -92,7 +93,7 @@ class _ScheduleList extends StatelessWidget {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: StreamBuilder<List<Schedule>>(
+        child: StreamBuilder<List<ScheduleWithColor>>(
             stream: GetIt.I<LocalDatabase>().watchSchedules(selectedDate),
             builder: (context, snapshot) {
 
@@ -114,13 +115,13 @@ class _ScheduleList extends StatelessWidget {
                   return SizedBox(height: 8.0);
                 },
                 itemBuilder: (context, index) {
-                  final schedule = snapshot.data![index];
+                  final scheduleWithColor = snapshot.data![index];
 
                   return ScheduleCard(
-                    startTime: schedule.startTime,
-                    endTime: schedule.endTime,
-                    content: schedule.cotnent,
-                    color: Colors.red,
+                    startTime: scheduleWithColor.schedule.startTime,
+                    endTime: scheduleWithColor.schedule.endTime,
+                    content: scheduleWithColor.schedule.cotnent,
+                    color: Color(int.parse('FF${scheduleWithColor.categoryColor.hexCode}', radix: 16)),
                   );
                 },
               );
