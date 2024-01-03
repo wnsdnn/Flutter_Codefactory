@@ -27,10 +27,7 @@ class CustomTextField extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        if(isTime)
-          renderTextField(),
-        if(!isTime)
-          Expanded(child: renderTextField()),
+        Expanded(child: renderTextField()),
       ],
     );
   }
@@ -77,6 +74,7 @@ class CustomTextField extends StatelessWidget {
         border: InputBorder.none,
         filled: true,
         fillColor: Colors.grey[300],
+        suffixText: isTime ? '시' : null,
       ),
     );
   }

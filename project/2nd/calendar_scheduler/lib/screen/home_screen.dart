@@ -116,11 +116,19 @@ class _ScheduleList extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final scheduleWithColor = snapshot.data![index];
 
-                  return ScheduleCard(
-                    startTime: scheduleWithColor.schedule.startTime,
-                    endTime: scheduleWithColor.schedule.endTime,
-                    content: scheduleWithColor.schedule.cotnent,
-                    color: Color(int.parse('FF${scheduleWithColor.categoryColor.hexCode}', radix: 16)),
+                  // 스와이프로 리스트를 삭제 시킬수 있는 위젯
+                  return Dismissible(
+                    key: ObjectKey(scheduleWithColor.schedule.id),
+                    direction: DismissDirection.endToStart,
+                    onDismissed: (direction) async {
+                      await GetIt.I<LocalDatabase>().removeSchedule(scheduleWithColor.schedule.id);
+                    },
+                    child: ScheduleCard(
+                      startTime: scheduleWithColor.schedule.startTime,
+                      endTime: scheduleWithColor.schedule.endTime,
+                      content: scheduleWithColor.schedule.cotnent,
+                      color: Color(int.parse('FF${scheduleWithColor.categoryColor.hexCode}', radix: 16)),
+                    ),
                   );
                 },
               );
