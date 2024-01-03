@@ -7,12 +7,14 @@ class CustomTextField extends StatelessWidget {
   // true - 시간 / false - 내용
   final bool isTime;
   final FormFieldSetter<String> onSaved;
+  final String initialValue;
 
   const CustomTextField({
     super.key,
     required this.label,
     required this.isTime,
     required this.onSaved,
+    required this.initialValue,
   });
 
   @override
@@ -62,6 +64,7 @@ class CustomTextField extends StatelessWidget {
 
         return null;
       },
+      initialValue: initialValue,
       cursorColor: Colors.grey,
       maxLines: isTime ? 1 : null,
       // maxLength: 500,

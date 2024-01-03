@@ -123,11 +123,26 @@ class _ScheduleList extends StatelessWidget {
                     onDismissed: (direction) async {
                       await GetIt.I<LocalDatabase>().removeSchedule(scheduleWithColor.schedule.id);
                     },
-                    child: ScheduleCard(
-                      startTime: scheduleWithColor.schedule.startTime,
-                      endTime: scheduleWithColor.schedule.endTime,
-                      content: scheduleWithColor.schedule.cotnent,
-                      color: Color(int.parse('FF${scheduleWithColor.categoryColor.hexCode}', radix: 16)),
+                    child: GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          // BottomSheet에 최대 사이즈 제한 풀어주기
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (context) {
+                            return ScheduleBottomSheet(
+                              selectdDate: selectedDate,
+                              scheduleId: scheduleWithColor.schedule.id,
+                            );
+                          },
+                        );
+                      },
+                      child: ScheduleCard(
+                        startTime: scheduleWithColor.schedule.startTime,
+                        endTime: scheduleWithColor.schedule.endTime,
+                        content: scheduleWithColor.schedule.cotnent,
+                        color: Color(int.parse('FF${scheduleWithColor.categoryColor.hexCode}', radix: 16)),
+                      ),
                     ),
                   );
                 },
