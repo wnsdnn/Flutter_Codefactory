@@ -1,9 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:scroll_widgets/layout/main_layout.dart';
+import 'package:scroll_widgets/screen/list_view_screen.dart';
 import 'package:scroll_widgets/screen/single_child_scroll_view_screen.dart';
 
+// 데이터 모델
+class ScreenModel {
+  final WidgetBuilder builder;
+  final String name;
+
+  ScreenModel({
+    required this.builder,
+    required this.name,
+  });
+}
+
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final screens = [
+    ScreenModel(
+        builder: (_) => SingleChildScrollViewScreen(),
+        name: 'SingleChildScrollViewScreen'),
+    ScreenModel(builder: (_) => ListViewScreen(), name: 'ListViewScreen'),
+  ];
+
+  HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,21 +43,19 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ElevatedButton(
+          children: screens.map((screenInfo) {
+            return ElevatedButton(
               style: buttonStyle,
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context) => SingleChildScrollViewScreen()),
-                );
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: screenInfo.builder));
               },
               child: Text(
-                'SingleChildScrollViewScreen',
+                screenInfo.name,
                 style: textStyle,
               ),
-            ),
-          ],
+            );
+          }).toList(),
         ),
       ),
     );
