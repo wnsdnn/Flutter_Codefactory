@@ -9,21 +9,56 @@ class CustomScrollViewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: CustomScrollView(
-          physics: BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics(),
-          ),
-          slivers: [
-            SliverAppBar(
-              title: Text('CustomScrollViewScreen'),
-            ),
-            // renderChildSliverList(),
-            // renderBuilderSliverList(),
-            // renderChildSliverGrid(),
-            renderSliverGridBuilder(),
-          ],
+      body: CustomScrollView(
+        physics: BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
         ),
+        slivers: [
+          renderSliverAppbar(),
+          // renderChildSliverList(),
+          // renderBuilderSliverList(),
+          // renderChildSliverGrid(),
+          renderSliverGridBuilder(),
+        ],
+      ),
+    );
+  }
+
+  // ===================================================
+
+  // AppBar
+  SliverAppBar renderSliverAppbar() {
+    return SliverAppBar(
+      // 스크롤 했을때 리스트의 중간에도 Appbar가 내려오게 할수 있음.
+      floating: true,
+      // 스크롤 했을때 완전고정
+      pinned: false,
+      // 자석효과
+      // floating이 true일때만 쓸수 있음
+      snap: true,
+      // 맨위, 맨 마지막에서 한계의 이상으로 스크롤 했을때
+      // 남는 공간을 차지
+      stretch: true,
+      // 앱바 최대 사이즈
+      expandedHeight: 200,
+      // 앱바 최소 사이즈
+      collapsedHeight: 100,
+      flexibleSpace: FlexibleSpaceBar(
+        title: Text('FlexibleSpace'),
+        background: Image.asset(
+          'asset/img/image_1.jpeg',
+          fit: BoxFit.cover,
+        ),
+      ),
+      backgroundColor: Colors.blue,
+      title: Text(
+        'CustomScrollViewScreen',
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+      iconTheme: IconThemeData(
+        color: Colors.white,
       ),
     );
   }
@@ -83,7 +118,6 @@ class CustomScrollViewScreen extends StatelessWidget {
 
   // ===================================================
 
-
   // GridView.builder와 유사함.
   SliverGrid renderSliverGridBuilder() {
     return SliverGrid(
@@ -91,17 +125,15 @@ class CustomScrollViewScreen extends StatelessWidget {
         crossAxisCount: 2,
       ),
       delegate: SliverChildBuilderDelegate(
-            (context, index) => renderContainer(
+        (context, index) => renderContainer(
           color: rainbowColors[index % rainbowColors.length],
           index: index,
         ),
+        childCount: 100,
       ),
     );
   }
 
-
-  // ===================================================
-  // ===================================================
   // ===================================================
 
   Widget renderContainer({
