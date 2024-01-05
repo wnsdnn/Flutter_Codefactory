@@ -20,6 +20,8 @@ class CustomScrollViewScreen extends StatelessWidget {
             ),
             // renderChildSliverList(),
             // renderBuilderSliverList(),
+            // renderChildSliverGrid(),
+            renderSliverGridBuilder(),
           ],
         ),
       ),
@@ -27,7 +29,6 @@ class CustomScrollViewScreen extends StatelessWidget {
   }
 
   // ===================================================
-
 
   // ListView 기본 생성자와 유사함
   SliverList renderChildSliverList() {
@@ -47,24 +48,59 @@ class CustomScrollViewScreen extends StatelessWidget {
 
   // ===================================================
 
-
   // ListView.builder 생성자와 유사함.
   SliverList renderBuilderSliverList() {
     return SliverList(
+      delegate: SliverChildBuilderDelegate((context, index) {
+        return renderContainer(
+          color: rainbowColors[index % rainbowColors.length],
+          index: index,
+        );
+      }, childCount: 100),
+    );
+  }
+
+  // ===================================================
+
+  // GridView.count와 유사함.
+  SliverGrid renderChildSliverGrid() {
+    return SliverGrid(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+      ),
+      delegate: SliverChildListDelegate(
+        numbers
+            .map(
+              (e) => renderContainer(
+                color: rainbowColors[e % rainbowColors.length],
+                index: e,
+              ),
+            )
+            .toList(),
+      ),
+    );
+  }
+
+  // ===================================================
+
+
+  // GridView.builder와 유사함.
+  SliverGrid renderSliverGridBuilder() {
+    return SliverGrid(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+      ),
       delegate: SliverChildBuilderDelegate(
-              (context, index) {
-            return renderContainer(
-              color: rainbowColors[index % rainbowColors.length],
-              index: index,
-            );
-          },
-          childCount: 100
+            (context, index) => renderContainer(
+          color: rainbowColors[index % rainbowColors.length],
+          index: index,
+        ),
       ),
     );
   }
 
 
-
+  // ===================================================
   // ===================================================
   // ===================================================
 
