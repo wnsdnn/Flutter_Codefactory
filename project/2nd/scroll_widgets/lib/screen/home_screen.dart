@@ -4,6 +4,7 @@ import 'package:scroll_widgets/screen/custom_scroll_view_screen.dart';
 import 'package:scroll_widgets/screen/grid_view_screen.dart';
 import 'package:scroll_widgets/screen/list_view_screen.dart';
 import 'package:scroll_widgets/screen/reorderable_list_view_screen.dart';
+import 'package:scroll_widgets/screen/scrollbar_screen.dart';
 import 'package:scroll_widgets/screen/single_child_scroll_view_screen.dart';
 
 // 데이터 모델
@@ -38,6 +39,10 @@ class HomeScreen extends StatelessWidget {
     ScreenModel(
       builder: (_) => CustomScrollViewScreen(),
       name: 'CustomScrollViewScreen',
+    ),
+    ScreenModel(
+      builder: (_) => ScrollbarScreen(),
+      name: 'ScrollbarScreen',
     ),
   ];
 
