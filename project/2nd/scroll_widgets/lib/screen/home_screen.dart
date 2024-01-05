@@ -3,6 +3,7 @@ import 'package:scroll_widgets/layout/main_layout.dart';
 import 'package:scroll_widgets/screen/custom_scroll_view_screen.dart';
 import 'package:scroll_widgets/screen/grid_view_screen.dart';
 import 'package:scroll_widgets/screen/list_view_screen.dart';
+import 'package:scroll_widgets/screen/refresh_indicator.dart';
 import 'package:scroll_widgets/screen/reorderable_list_view_screen.dart';
 import 'package:scroll_widgets/screen/scrollbar_screen.dart';
 import 'package:scroll_widgets/screen/single_child_scroll_view_screen.dart';
@@ -43,6 +44,10 @@ class HomeScreen extends StatelessWidget {
     ScreenModel(
       builder: (_) => ScrollbarScreen(),
       name: 'ScrollbarScreen',
+    ),
+    ScreenModel(
+      builder: (_) => RefreshIndicatorScreen(),
+      name: 'RefreshIndicatorScreen',
     ),
   ];
 
