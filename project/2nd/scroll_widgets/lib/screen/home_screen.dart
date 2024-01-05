@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scroll_widgets/layout/main_layout.dart';
+import 'package:scroll_widgets/screen/custom_scroll_view_screen.dart';
 import 'package:scroll_widgets/screen/grid_view_screen.dart';
 import 'package:scroll_widgets/screen/list_view_screen.dart';
 import 'package:scroll_widgets/screen/reorderable_list_view_screen.dart';
@@ -19,11 +20,25 @@ class ScreenModel {
 class HomeScreen extends StatelessWidget {
   final screens = [
     ScreenModel(
-        builder: (_) => SingleChildScrollViewScreen(),
-        name: 'SingleChildScrollViewScreen'),
-    ScreenModel(builder: (_) => ListViewScreen(), name: 'ListViewScreen'),
-    ScreenModel(builder: (_) => GridViewScreen(), name: 'GridViewScreen'),
-    ScreenModel(builder: (_) => ReorderableListViewScreen(), name: 'ReorderableListViewScreen'),
+      builder: (_) => SingleChildScrollViewScreen(),
+      name: 'SingleChildScrollViewScreen',
+    ),
+    ScreenModel(
+      builder: (_) => ListViewScreen(),
+      name: 'ListViewScreen',
+    ),
+    ScreenModel(
+      builder: (_) => GridViewScreen(),
+      name: 'GridViewScreen',
+    ),
+    ScreenModel(
+      builder: (_) => ReorderableListViewScreen(),
+      name: 'ReorderableListViewScreen',
+    ),
+    ScreenModel(
+      builder: (_) => CustomScrollViewScreen(),
+      name: 'CustomScrollViewScreen',
+    ),
   ];
 
   HomeScreen({super.key});
