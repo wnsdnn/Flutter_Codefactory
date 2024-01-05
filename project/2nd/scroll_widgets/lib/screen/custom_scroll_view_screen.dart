@@ -1,8 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:scroll_widgets/const/colors.dart';
 
+class _SliverFixedHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+  final double maxHeight;
+  final double minHeight;
+
+  _SliverFixedHeaderDelegate({
+    required this.child,
+    required this.maxHeight,
+    required this.minHeight,
+  });
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return SizedBox.expand(
+      child: child,
+    );
+  }
+
+  @override
+  // 최대 높이
+  double get maxExtent => maxHeight;
+
+  @override
+  // 최소 높이
+  double get minExtent => minHeight;
+
+  @override
+  // covariant - 상속된 클래스도 사용가능
+  // oldDelegate - build가 실행이 됐을때 이전 Delegate
+  // this - 새로운 delegate
+  // shouldRebuild - 새로 build를 해야할지 말지 결정
+  // false - build 안함 / true - build 함
+  bool shouldRebuild(_SliverFixedHeaderDelegate oldDelegate) {
+    return this.minHeight != oldDelegate.minHeight ||
+        this.maxHeight != oldDelegate.maxHeight ||
+        this.child != oldDelegate.child;
+  }
+}
+
 class CustomScrollViewScreen extends StatelessWidget {
-  final List<int> numbers = List.generate(100, (index) => index);
+  final List<int> numbers = List.generate(30, (index) => index);
 
   CustomScrollViewScreen({super.key});
 
@@ -15,9 +55,11 @@ class CustomScrollViewScreen extends StatelessWidget {
         ),
         slivers: [
           renderSliverAppbar(),
+          renderHeader(),
           // renderChildSliverList(),
           // renderBuilderSliverList(),
-          // renderChildSliverGrid(),
+          renderChildSliverGrid(),
+          renderHeader(),
           renderSliverGridBuilder(),
         ],
       ),
@@ -65,6 +107,27 @@ class CustomScrollViewScreen extends StatelessWidget {
 
   // ===================================================
 
+  SliverPersistentHeader renderHeader() {
+    return SliverPersistentHeader(
+      pinned: true,
+      delegate: _SliverFixedHeaderDelegate(
+        child: Container(
+          color: Colors.black,
+          child: Center(
+            child: Text(
+              '신기하지?',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+        minHeight: 50,
+        maxHeight: 200,
+      ),
+    );
+  }
+
+  // ===================================================
+
   // ListView 기본 생성자와 유사함
   SliverList renderChildSliverList() {
     return SliverList(
@@ -86,12 +149,15 @@ class CustomScrollViewScreen extends StatelessWidget {
   // ListView.builder 생성자와 유사함.
   SliverList renderBuilderSliverList() {
     return SliverList(
-      delegate: SliverChildBuilderDelegate((context, index) {
-        return renderContainer(
-          color: rainbowColors[index % rainbowColors.length],
-          index: index,
-        );
-      }, childCount: 100),
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          return renderContainer(
+            color: rainbowColors[index % rainbowColors.length],
+            index: index,
+          );
+        },
+        childCount: 30,
+      ),
     );
   }
 
@@ -129,7 +195,7 @@ class CustomScrollViewScreen extends StatelessWidget {
           color: rainbowColors[index % rainbowColors.length],
           index: index,
         ),
-        childCount: 100,
+        childCount: 30,
       ),
     );
   }
