@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scroll_widgets/layout/main_layout.dart';
 import 'package:scroll_widgets/screen/grid_view_screen.dart';
 import 'package:scroll_widgets/screen/list_view_screen.dart';
+import 'package:scroll_widgets/screen/reorderable_list_view_screen.dart';
 import 'package:scroll_widgets/screen/single_child_scroll_view_screen.dart';
 
 // 데이터 모델
@@ -22,6 +23,7 @@ class HomeScreen extends StatelessWidget {
         name: 'SingleChildScrollViewScreen'),
     ScreenModel(builder: (_) => ListViewScreen(), name: 'ListViewScreen'),
     ScreenModel(builder: (_) => GridViewScreen(), name: 'GridViewScreen'),
+    ScreenModel(builder: (_) => ReorderableListViewScreen(), name: 'ReorderableListViewScreen'),
   ];
 
   HomeScreen({super.key});
@@ -42,22 +44,24 @@ class HomeScreen extends StatelessWidget {
       title: 'Home',
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: screens.map((screenInfo) {
-            return ElevatedButton(
-              style: buttonStyle,
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: screenInfo.builder));
-              },
-              child: Text(
-                screenInfo.name,
-                style: textStyle,
-              ),
-            );
-          }).toList(),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: screens.map((screenInfo) {
+              return ElevatedButton(
+                style: buttonStyle,
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: screenInfo.builder));
+                },
+                child: Text(
+                  screenInfo.name,
+                  style: textStyle,
+                ),
+              );
+            }).toList(),
+          ),
         ),
       ),
     );
