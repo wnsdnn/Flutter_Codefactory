@@ -16,7 +16,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -37,8 +36,14 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
 
-
+    response.data['response']['body']['items'].map(
+      (item) {
+        print(item);
+        return item;
+      },
+    );
     print(response.data['response']['body']['items'].map((item) => StatModel.fromJson(json: item)));
+    // print(.map((item) => StatModel.fromJson(json: item)));
   }
 
   @override
