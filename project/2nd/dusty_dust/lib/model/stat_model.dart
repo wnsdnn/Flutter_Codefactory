@@ -15,25 +15,25 @@ enum ItemCode {
 }
 
 class StatModel {
-  final double? daegu;
-  final double? chungnam;
-  final double? incheon;
-  final double? daejeon;
-  final double? gyeongbuk;
-  final double? sejong;
-  final double? gwangju;
-  final double? jeonbuk;
-  final double? gangwon;
-  final double? ulsan;
-  final double? jeonnam;
-  final double? seoul;
-  final double? busan;
-  final double? jeju;
-  final double? chungbuk;
-  final double? gyeongnam;
-  final double? gyeonggi;
-  final DateTime? dataTime;
-  final ItemCode? itemCode;
+  final double daegu;
+  final double chungnam;
+  final double incheon;
+  final double daejeon;
+  final double gyeongbuk;
+  final double sejong;
+  final double gwangju;
+  final double jeonbuk;
+  final double gangwon;
+  final double ulsan;
+  final double jeonnam;
+  final double seoul;
+  final double busan;
+  final double jeju;
+  final double chungbuk;
+  final double gyeongnam;
+  final double gyeonggi;
+  final DateTime dataTime;
+  final ItemCode itemCode;
 
 
 
