@@ -24,13 +24,25 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<Map<ItemCode, List<StatModel>>> fetchData() async {
     Map<ItemCode, List<StatModel>> stats = {};
+    List<Future> futures = [];
 
-    for(ItemCode itemCode in ItemCode.values) {
-      final statModels = await StatRepository.fetchData(itemCode: itemCode);
+    for (ItemCode itemCode in ItemCode.values) {
+      final Future<List<StatModel>> response = StatRepository.fetchData(
+        itemCode: itemCode,
+      );
 
-      stats.addAll({itemCode: statModels});
+      futures.add(response);
     }
 
+    // List<Future> 타입 안에 있는 Future에 값들이 한번에 호출됨
+    final results = await Future.wait(futures);
+
+    for (int i = 0; i < results.length; i++) {
+      final key = ItemCode.values[i];
+      final value = results[i];
+
+      stats.addAll({key: value});
+    }
 
     return stats;
   }
