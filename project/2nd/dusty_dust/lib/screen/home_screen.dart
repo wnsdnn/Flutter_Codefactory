@@ -1,12 +1,10 @@
-import 'package:dio/dio.dart';
 import 'package:dusty_dust/component/category_card.dart';
 import 'package:dusty_dust/component/hourly_card.dart';
 import 'package:dusty_dust/component/main_app_bar.dart';
 import 'package:dusty_dust/component/main_drawer.dart';
 import 'package:dusty_dust/const/colors.dart';
-import 'package:dusty_dust/const/data.dart';
 import 'package:dusty_dust/const/regions.dart';
-import 'package:dusty_dust/const/status_level.dart';
+import 'package:dusty_dust/model/stat_and_status_model.dart';
 import 'package:dusty_dust/model/stat_model.dart';
 import 'package:dusty_dust/repository/stat_repository.dart';
 import 'package:dusty_dust/utils/data_utils.dart';
@@ -79,11 +77,27 @@ class _HomeScreenState extends State<HomeScreen> {
             Map<ItemCode, List<StatModel>> stats = snapshot.data!;
             StatModel pm10RecentStat = stats[ItemCode.PM10]![0];
 
-            // 최소치보단 작은 것들 중에 젤 마지막 항목 가져오기
             final status = DataUtils.getStatusFromItemCodeAndValue(
               value: pm10RecentStat.seoul,
               itemCode: ItemCode.PM10,
             );
+
+            final ssModel = stats.keys.map(
+              (key) {
+                final value = stats[key]!;
+                final stat = value[0];
+                final status = DataUtils.getStatusFromItemCodeAndValue(
+                  value: stat.getLevelFromRegion(region),
+                  itemCode: key,
+                );
+
+                return StatAndStatusModel(
+                  itemCode: key,
+                  status: status,
+                  stat: stat,
+                );
+              },
+            ).toList();
 
             return CustomScrollView(
               slivers: [
@@ -96,7 +110,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      CategoryCard(),
+                      CategoryCard(
+                        region: region,
+                        models: ssModel,
+                      ),
                       const SizedBox(height: 16.0),
                       HourlyCard(),
                     ],

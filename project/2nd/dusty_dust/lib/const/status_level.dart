@@ -73,9 +73,7 @@
   * */
 
 import 'package:flutter/material.dart';
-
 import 'package:dusty_dust/model/status_model.dart';
-import 'package:flutter/material.dart';
 
 final statusLevel = [
   StatusModel(

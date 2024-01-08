@@ -26,7 +26,7 @@ class DataUtils {
   }
 
   // 국문이름 반환
-  static String itemCodeStringKrString({
+  static String getItemCodeStringKrString({
     required ItemCode itemCode,
   }) {
     switch (itemCode) {
