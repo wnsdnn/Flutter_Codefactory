@@ -8,6 +8,7 @@ import 'package:dusty_dust/const/data.dart';
 import 'package:dusty_dust/const/status_level.dart';
 import 'package:dusty_dust/model/stat_model.dart';
 import 'package:dusty_dust/repository/stat_repository.dart';
+import 'package:dusty_dust/utils/data_utils.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -49,9 +50,10 @@ class _HomeScreenState extends State<HomeScreen> {
             StatModel recentStat = stats[0];
 
             // 최소치보단 작은 것들 중에 젤 마지막 항목 가져오기
-            final status = statusLevel.where(
-              (element) => element.minFineDust < recentStat.seoul,
-            ).last;
+            final status = DataUtils.getStatusFromItemCodeAndValue(
+              value: recentStat.seoul,
+              itemCode: ItemCode.PM10,
+            );
 
             return CustomScrollView(
               slivers: [
