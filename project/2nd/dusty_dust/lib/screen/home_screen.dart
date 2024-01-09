@@ -27,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     scrollController.addListener(scrollListener);
+    fetchData();
   }
 
   @override
@@ -35,7 +36,6 @@ class _HomeScreenState extends State<HomeScreen> {
     scrollController.dispose();
     super.dispose();
   }
-
 
   // Future<Map<ItemCode, List<StatModel>>> fetchData() async {
   //   Map<ItemCode, List<StatModel>> stats = {};
@@ -62,6 +62,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
   Future<void> fetchData() async {
+    final now = DateTime.now();
+    final fetchTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      now.hour,
+    );
+
+    final box = Hive.box<StatModel>(ItemCode.PM10.name);
+    final recent = box.values.last as StatModel;
+
+    if(recent.dataTime.isAtSameMomentAs(fetchTime)) {
+      print('이미 최신 데이터가 있습니다.');
+      return;
+    }
+
     List<Future> futures = [];
 
     for (ItemCode itemCode in ItemCode.values) {
@@ -84,6 +100,15 @@ class _HomeScreenState extends State<HomeScreen> {
       for (StatModel stat in value) {
         box.put(stat.dataTime.toString(), stat);
       }
+
+      final allKeys = box.keys.toList();
+
+      if(allKeys.length > 24) {
+        // start - 시작 인덱스
+        // end - 끝 인덱스
+        final deleteKeys = allKeys.sublist(0, allKeys.length - 24);
+        box.deleteAll(deleteKeys);
+      }
     }
   }
 
@@ -102,9 +127,18 @@ class _HomeScreenState extends State<HomeScreen> {
     return ValueListenableBuilder<Box>(
       valueListenable: Hive.box<StatModel>(ItemCode.PM10.name).listenable(),
       builder: (context, box, widget) {
-        // PM10 (미세먼지)에 관한 box가 매개변수로 옴
+        // box - valueListenable에서 설정해놓은 Box 객체가 반환됨
+
+        // if(box.values.isEmpty) {
+        //   return Scaffold(
+        //     body: Center(
+        //       child: CircularProgressIndicator(),
+        //     ),
+        //   );
+        // }
 
         final recentStat = box.values.toList().last as StatModel;
+
         final status = DataUtils.getStatusFromItemCodeAndValue(
           value: recentStat.getLevelFromRegion(region),
           itemCode: ItemCode.PM10,
