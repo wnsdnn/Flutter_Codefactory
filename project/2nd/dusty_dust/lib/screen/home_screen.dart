@@ -2,7 +2,6 @@ import 'package:dusty_dust/component/category_card.dart';
 import 'package:dusty_dust/component/hourly_card.dart';
 import 'package:dusty_dust/component/main_app_bar.dart';
 import 'package:dusty_dust/component/main_drawer.dart';
-import 'package:dusty_dust/const/colors.dart';
 import 'package:dusty_dust/const/regions.dart';
 import 'package:dusty_dust/model/stat_and_status_model.dart';
 import 'package:dusty_dust/model/stat_model.dart';
@@ -119,10 +118,24 @@ class _HomeScreenState extends State<HomeScreen> {
                           lightColor: status.lightColor,
                         ),
                         const SizedBox(height: 16.0),
-                        HourlyCard(
-                          darkColor: status.darkColor,
-                          lightColor: status.lightColor,
-                        ),
+                        ...stats.keys.map(
+                          (itemCode) {
+                            final stat = stats[itemCode]!;
+
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16.0),
+                              child: HourlyCard(
+                                darkColor: status.darkColor,
+                                lightColor: status.lightColor,
+                                region: region,
+                                category: DataUtils.getItemCodeStringKrString(
+                                    itemCode: itemCode),
+                                stats: stat,
+                              ),
+                            );
+                          },
+                        ).toList(),
+                        const SizedBox(height: 16.0),
                       ],
                     ),
                   ),
