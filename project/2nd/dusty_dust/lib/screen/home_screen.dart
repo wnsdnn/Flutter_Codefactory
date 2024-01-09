@@ -76,9 +76,10 @@ class _HomeScreenState extends State<HomeScreen> {
       future: fetchData(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
+          print(snapshot.error);
           return Scaffold(
             body: Center(
-              child: Text('에러가 있습니다.'),
+              child: Text('${snapshot.error}'),
             ),
           );
         }
