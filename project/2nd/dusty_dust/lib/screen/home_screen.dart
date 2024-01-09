@@ -8,7 +8,7 @@ import 'package:dusty_dust/model/stat_model.dart';
 import 'package:dusty_dust/repository/stat_repository.dart';
 import 'package:dusty_dust/utils/data_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -36,45 +36,70 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
+
   Future<Map<ItemCode, List<StatModel>>> fetchData() async {
+    Map<ItemCode, List<StatModel>> stats = {};
     List<Future> futures = [];
 
     for (ItemCode itemCode in ItemCode.values) {
       final Future<List<StatModel>> response = StatRepository.fetchData(
         itemCode: itemCode,
       );
-
       futures.add(response);
     }
-
     // List<Future> 타입 안에 있는 Future에 값들이 한번에 호출됨
     final results = await Future.wait(futures);
 
-    // Hive에 데이터 넣기
     for (int i = 0; i < results.length; i++) {
-      final key = ItemCode.values[i];  // ItemCode
-      final value = results[i];  // List<StatModel>
-      final box = Hive.box(key.name);
+      final key = ItemCode.values[i];
+      final value = results[i];
 
-      for (StatModel stat in value) {
-        box.put(stat.dataTime.toString(), stat);
-      }
+      stats.addAll({key: value});
     }
 
-    // Box에서 데이터 가져와서 집어넣기
-    return ItemCode.values.fold<Map<ItemCode, List<StatModel>>>(
-      {},
-      (previousValue, itemCode) {
-        final box = Hive.box<StatModel>(itemCode.name);
-
-        previousValue.addAll({
-          itemCode : box.values.toList(),
-        });
-        
-        return previousValue;
-      },
-    );
+    return stats;
   }
+
+
+  // Future<Map<ItemCode, List<StatModel>>> fetchData() async {
+  //   List<Future> futures = [];
+  //
+  //   for (ItemCode itemCode in ItemCode.values) {
+  //     final Future<List<StatModel>> response = StatRepository.fetchData(
+  //       itemCode: itemCode,
+  //     );
+  //
+  //     futures.add(response);
+  //   }
+  //
+  //   // List<Future> 타입 안에 있는 Future에 값들이 한번에 호출됨
+  //   final results = await Future.wait(futures);
+  //
+  //   // Hive에 데이터 넣기
+  //   for (int i = 0; i < results.length; i++) {
+  //     final key = ItemCode.values[i];  // ItemCode
+  //     final value = results[i];  // List<StatModel>
+  //     final box = Hive.box(key.name);
+  //
+  //     for (StatModel stat in value) {
+  //       box.put(stat.dataTime.toString(), stat);
+  //     }
+  //   }
+  //
+  //   // Box에서 데이터 가져와서 집어넣기
+  //   return ItemCode.values.fold<Map<ItemCode, List<StatModel>>>(
+  //     {},
+  //     (previousValue, itemCode) {
+  //       final box = Hive.box<StatModel>(itemCode.name);
+  //
+  //       previousValue.addAll({
+  //         itemCode : box.values.toList(),
+  //       });
+  //
+  //       return previousValue;
+  //     },
+  //   );
+  // }
 
   scrollListener() {
     bool isExpanded = scrollController.offset < 500 - kToolbarHeight;
@@ -111,6 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         Map<ItemCode, List<StatModel>> stats = snapshot.data!;
         StatModel pm10RecentStat = stats[ItemCode.PM10]![0];
+
 
         // 미세먼지 최근 데이터의 현재 상태
         final status = DataUtils.getStatusFromItemCodeAndValue(
