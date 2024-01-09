@@ -37,69 +37,55 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
-  Future<Map<ItemCode, List<StatModel>>> fetchData() async {
-    Map<ItemCode, List<StatModel>> stats = {};
-    List<Future> futures = [];
-
-    for (ItemCode itemCode in ItemCode.values) {
-      final Future<List<StatModel>> response = StatRepository.fetchData(
-        itemCode: itemCode,
-      );
-      futures.add(response);
-    }
-    // List<Future> 타입 안에 있는 Future에 값들이 한번에 호출됨
-    final results = await Future.wait(futures);
-
-    for (int i = 0; i < results.length; i++) {
-      final key = ItemCode.values[i];
-      final value = results[i];
-
-      stats.addAll({key: value});
-    }
-
-    return stats;
-  }
-
-
   // Future<Map<ItemCode, List<StatModel>>> fetchData() async {
+  //   Map<ItemCode, List<StatModel>> stats = {};
   //   List<Future> futures = [];
   //
   //   for (ItemCode itemCode in ItemCode.values) {
   //     final Future<List<StatModel>> response = StatRepository.fetchData(
   //       itemCode: itemCode,
   //     );
-  //
   //     futures.add(response);
   //   }
-  //
   //   // List<Future> 타입 안에 있는 Future에 값들이 한번에 호출됨
   //   final results = await Future.wait(futures);
   //
-  //   // Hive에 데이터 넣기
   //   for (int i = 0; i < results.length; i++) {
-  //     final key = ItemCode.values[i];  // ItemCode
-  //     final value = results[i];  // List<StatModel>
-  //     final box = Hive.box(key.name);
+  //     final key = ItemCode.values[i];
+  //     final value = results[i];
   //
-  //     for (StatModel stat in value) {
-  //       box.put(stat.dataTime.toString(), stat);
-  //     }
+  //     stats.addAll({key: value});
   //   }
   //
-  //   // Box에서 데이터 가져와서 집어넣기
-  //   return ItemCode.values.fold<Map<ItemCode, List<StatModel>>>(
-  //     {},
-  //     (previousValue, itemCode) {
-  //       final box = Hive.box<StatModel>(itemCode.name);
-  //
-  //       previousValue.addAll({
-  //         itemCode : box.values.toList(),
-  //       });
-  //
-  //       return previousValue;
-  //     },
-  //   );
+  //   return stats;
   // }
+
+
+  Future<void> fetchData() async {
+    List<Future> futures = [];
+
+    for (ItemCode itemCode in ItemCode.values) {
+      final Future<List<StatModel>> response = StatRepository.fetchData(
+        itemCode: itemCode,
+      );
+
+      futures.add(response);
+    }
+
+    // List<Future> 타입 안에 있는 Future에 값들이 한번에 호출됨
+    final results = await Future.wait(futures);
+
+    // Hive에 데이터 넣기
+    for (int i = 0; i < results.length; i++) {
+      final key = ItemCode.values[i];  // ItemCode
+      final value = results[i];  // List<StatModel>
+      final box = Hive.box(key.name);
+
+      for (StatModel stat in value) {
+        box.put(stat.dataTime.toString(), stat);
+      }
+    }
+  }
 
   scrollListener() {
     bool isExpanded = scrollController.offset < 500 - kToolbarHeight;
@@ -113,53 +99,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<ItemCode, List<StatModel>>>(
-      future: fetchData(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          print(snapshot.error);
-          return Scaffold(
-            body: Center(
-              child: Text('${snapshot.error}'),
-            ),
-          );
-        }
+    return ValueListenableBuilder<Box>(
+      valueListenable: Hive.box(ItemCode.PM10.name).listenable(),
+      builder: (context, box, widget) {
+        // PM10 (미세먼지)에 관한 box가 매개변수로 옴
 
-        if (!snapshot.hasData) {
-          // 로딩상태
-          return Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-
-        Map<ItemCode, List<StatModel>> stats = snapshot.data!;
-        StatModel pm10RecentStat = stats[ItemCode.PM10]![0];
-
-
-        // 미세먼지 최근 데이터의 현재 상태
+        final recentStat = box.values.toList().last as StatModel;
         final status = DataUtils.getStatusFromItemCodeAndValue(
-          value: pm10RecentStat.seoul,
+          value: recentStat.getLevelFromRegion(region),
           itemCode: ItemCode.PM10,
         );
-
-        final ssModel = stats.keys.map(
-          (key) {
-            final value = stats[key]!;
-            final stat = value[0];
-            final status = DataUtils.getStatusFromItemCodeAndValue(
-              value: stat.getLevelFromRegion(region),
-              itemCode: key,
-            );
-
-            return StatAndStatusModel(
-              itemCode: key,
-              status: status,
-              stat: stat,
-            );
-          },
-        ).toList();
 
         return Scaffold(
           drawer: MainDrawer(
@@ -180,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
               slivers: [
                 MainAppBar(
                   status: status,
-                  stat: pm10RecentStat,
+                  stat: recentStat,
                   region: region,
                   isExpanded: isExpanded,
                 ),
@@ -190,14 +139,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       CategoryCard(
                         region: region,
-                        models: ssModel,
                         darkColor: status.darkColor,
                         lightColor: status.lightColor,
                       ),
                       const SizedBox(height: 16.0),
-                      ...stats.keys.map(
-                        (itemCode) {
-                          final stat = stats[itemCode]!;
+                      ...ItemCode.values.map(
+                            (itemCode) {
 
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 16.0),
@@ -205,9 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               darkColor: status.darkColor,
                               lightColor: status.lightColor,
                               region: region,
-                              category: DataUtils.getItemCodeStringKrString(
-                                  itemCode: itemCode),
-                              stats: stat,
+                              itemCode: itemCode,
                             ),
                           );
                         },

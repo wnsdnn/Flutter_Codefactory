@@ -9,12 +9,10 @@ class CategoryCard extends StatelessWidget {
   final String region;
   final Color darkColor;
   final Color lightColor;
-  final List<StatAndStatusModel> models;
 
   CategoryCard({
     super.key,
     required this.region,
-    required this.models,
     required this.darkColor,
     required this.lightColor,
   });
