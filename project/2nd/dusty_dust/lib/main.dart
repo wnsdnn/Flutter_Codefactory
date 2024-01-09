@@ -18,7 +18,7 @@ void main() async {
 
   // ItemCode에 값별로 Hive에 박스 열기
   for(ItemCode itemCode in ItemCode.values) {
-    await Hive.openBox(itemCode.name);
+    await Hive.openBox<StatModel>(itemCode.name);
   }
 
   runApp(

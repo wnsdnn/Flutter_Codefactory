@@ -8,6 +8,7 @@ import 'package:dusty_dust/model/stat_model.dart';
 import 'package:dusty_dust/repository/stat_repository.dart';
 import 'package:dusty_dust/utils/data_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -36,7 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<Map<ItemCode, List<StatModel>>> fetchData() async {
-    Map<ItemCode, List<StatModel>> stats = {};
     List<Future> futures = [];
 
     for (ItemCode itemCode in ItemCode.values) {
@@ -50,20 +50,36 @@ class _HomeScreenState extends State<HomeScreen> {
     // List<Future> 타입 안에 있는 Future에 값들이 한번에 호출됨
     final results = await Future.wait(futures);
 
+    // Hive에 데이터 넣기
     for (int i = 0; i < results.length; i++) {
-      final key = ItemCode.values[i];
-      final value = results[i];
+      final key = ItemCode.values[i];  // ItemCode
+      final value = results[i];  // List<StatModel>
+      final box = Hive.box(key.name);
 
-      stats.addAll({key: value});
+      for (StatModel stat in value) {
+        box.put(stat.dataTime.toString(), stat);
+      }
     }
 
-    return stats;
+    // Box에서 데이터 가져와서 집어넣기
+    return ItemCode.values.fold<Map<ItemCode, List<StatModel>>>(
+      {},
+      (previousValue, itemCode) {
+        final box = Hive.box<StatModel>(itemCode.name);
+
+        previousValue.addAll({
+          itemCode : box.values.toList(),
+        });
+        
+        return previousValue;
+      },
+    );
   }
 
   scrollListener() {
     bool isExpanded = scrollController.offset < 500 - kToolbarHeight;
 
-    if(isExpanded != this.isExpanded) {
+    if (isExpanded != this.isExpanded) {
       setState(() {
         this.isExpanded = isExpanded;
       });
@@ -103,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
         );
 
         final ssModel = stats.keys.map(
-              (key) {
+          (key) {
             final value = stats[key]!;
             final stat = value[0];
             final status = DataUtils.getStatusFromItemCodeAndValue(
@@ -154,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 16.0),
                       ...stats.keys.map(
-                            (itemCode) {
+                        (itemCode) {
                           final stat = stats[itemCode]!;
 
                           return Padding(
