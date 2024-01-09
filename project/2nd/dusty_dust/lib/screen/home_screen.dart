@@ -60,7 +60,6 @@ class _HomeScreenState extends State<HomeScreen> {
   //   return stats;
   // }
 
-
   Future<void> fetchData() async {
     final now = DateTime.now();
     final fetchTime = DateTime(
@@ -71,9 +70,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     final box = Hive.box<StatModel>(ItemCode.PM10.name);
-    final recent = box.values.last as StatModel;
 
-    if(recent.dataTime.isAtSameMomentAs(fetchTime)) {
+    if (box.values.isNotEmpty &&
+        (box.values.last as StatModel).dataTime.isAtSameMomentAs(fetchTime)) {
       print('이미 최신 데이터가 있습니다.');
       return;
     }
@@ -93,9 +92,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // Hive에 데이터 넣기
     for (int i = 0; i < results.length; i++) {
-      final key = ItemCode.values[i];  // ItemCode
-      final value = results[i];  // List<StatModel>
-      final box = Hive.box(key.name);
+      final key = ItemCode.values[i]; // ItemCode
+      final value = results[i]; // List<StatModel>
+      final box = Hive.box<StatModel>(key.name);
 
       for (StatModel stat in value) {
         box.put(stat.dataTime.toString(), stat);
@@ -103,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       final allKeys = box.keys.toList();
 
-      if(allKeys.length > 24) {
+      if (allKeys.length > 24) {
         // start - 시작 인덱스
         // end - 끝 인덱스
         final deleteKeys = allKeys.sublist(0, allKeys.length - 24);
@@ -129,13 +128,13 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, box, widget) {
         // box - valueListenable에서 설정해놓은 Box 객체가 반환됨
 
-        // if(box.values.isEmpty) {
-        //   return Scaffold(
-        //     body: Center(
-        //       child: CircularProgressIndicator(),
-        //     ),
-        //   );
-        // }
+        if(box.values.isEmpty) {
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
 
         final recentStat = box.values.toList().last as StatModel;
 
@@ -178,8 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 16.0),
                       ...ItemCode.values.map(
-                            (itemCode) {
-
+                        (itemCode) {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 16.0),
                             child: HourlyCard(
