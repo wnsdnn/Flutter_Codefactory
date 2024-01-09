@@ -7,12 +7,16 @@ import 'package:flutter/material.dart';
 
 class CategoryCard extends StatelessWidget {
   final String region;
+  final Color darkColor;
+  final Color lightColor;
   final List<StatAndStatusModel> models;
 
   CategoryCard({
     super.key,
     required this.region,
     required this.models,
+    required this.darkColor,
+    required this.lightColor,
   });
 
   @override
@@ -20,6 +24,7 @@ class CategoryCard extends StatelessWidget {
     return SizedBox(
       height: 160.0,
       child: MainCard(
+        backgroundColor: lightColor,
         child: LayoutBuilder(builder: (context, constraint) {
           // constraint 현재 감싸고 있는 위젯에서 minWidth, maxWidth 같은 값들을 가져올수 있음
           double cardWidth = constraint.maxWidth / 3;
@@ -29,6 +34,7 @@ class CategoryCard extends StatelessWidget {
             children: [
               CardTitle(
                 title: '종류별 통계',
+                backgroundColor: darkColor,
               ),
               Expanded(
                 child: ListView(

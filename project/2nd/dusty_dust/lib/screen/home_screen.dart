@@ -48,7 +48,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: primaryColor,
       drawer: MainDrawer(
         selectedRegion: region,
         onRegionTap: (region) {
@@ -77,6 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Map<ItemCode, List<StatModel>> stats = snapshot.data!;
             StatModel pm10RecentStat = stats[ItemCode.PM10]![0];
 
+            // 미세먼지 최근 데이터의 현재 상태
             final status = DataUtils.getStatusFromItemCodeAndValue(
               value: pm10RecentStat.seoul,
               itemCode: ItemCode.PM10,
@@ -99,27 +99,35 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ).toList();
 
-            return CustomScrollView(
-              slivers: [
-                MainAppBar(
-                  status: status,
-                  stat: pm10RecentStat,
-                  region: region,
-                ),
-                SliverToBoxAdapter(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      CategoryCard(
-                        region: region,
-                        models: ssModel,
-                      ),
-                      const SizedBox(height: 16.0),
-                      HourlyCard(),
-                    ],
+            return Container(
+              color: status.primaryColor,
+              child: CustomScrollView(
+                slivers: [
+                  MainAppBar(
+                    status: status,
+                    stat: pm10RecentStat,
+                    region: region,
                   ),
-                ),
-              ],
+                  SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        CategoryCard(
+                          region: region,
+                          models: ssModel,
+                          darkColor: status.darkColor,
+                          lightColor: status.lightColor,
+                        ),
+                        const SizedBox(height: 16.0),
+                        HourlyCard(
+                          darkColor: status.darkColor,
+                          lightColor: status.lightColor,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             );
           }),
     );
