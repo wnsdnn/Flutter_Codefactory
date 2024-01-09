@@ -61,7 +61,7 @@ class _TestScreenState extends State<TestScreen> {
             onPressed: () {
               final box = Hive.box(testBox);
 
-              box.delete(1);
+              box.delete(1000);
             },
             child: Text('삭제하기!'),
           ),
