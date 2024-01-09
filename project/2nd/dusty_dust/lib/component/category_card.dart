@@ -1,9 +1,10 @@
 import 'package:dusty_dust/component/card_title.dart';
 import 'package:dusty_dust/component/main_card.dart';
 import 'package:dusty_dust/component/main_stat.dart';
-import 'package:dusty_dust/model/stat_and_status_model.dart';
+import 'package:dusty_dust/model/stat_model.dart';
 import 'package:dusty_dust/utils/data_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class CategoryCard extends StatelessWidget {
   final String region;
@@ -38,27 +39,33 @@ class CategoryCard extends StatelessWidget {
                 child: ListView(
                   physics: PageScrollPhysics(),
                   scrollDirection: Axis.horizontal,
-                  children: models
+                  children: ItemCode.values
                       .map(
-                        (model) => MainStat(
-                          category: DataUtils.getItemCodeStringKrString(itemCode: model.itemCode),
-                          imgPath: model.status.imagePath,
-                          level: model.status.label,
-                          stat: '${model.stat.getLevelFromRegion(region)}${DataUtils.getUnitFromItemCode(itemCode: model.itemCode)}',
-                          width: cardWidth,
+                        (ItemCode itemCode) => ValueListenableBuilder<Box>(
+                          valueListenable:
+                              Hive.box<StatModel>(itemCode.name).listenable(),
+                          builder: (context, box, widget) {
+                            final stat = box.values.toList().last as StatModel;
+                            final status =
+                                DataUtils.getStatusFromItemCodeAndValue(
+                              value: stat.getLevelFromRegion(region),
+                              itemCode: itemCode,
+                            );
+
+                            return MainStat(
+                              width: cardWidth,
+                              level: status.label,
+                              imgPath: status.imagePath,
+                              category: DataUtils.getItemCodeStringKrString(
+                                itemCode: itemCode,
+                              ),
+                              stat:
+                                  '${stat.getLevelFromRegion(region)}${DataUtils.getUnitFromItemCode(itemCode: itemCode)}',
+                            );
+                          },
                         ),
                       )
                       .toList(),
-                  // List.generate(
-                  //   20,
-                  //   (index) => MainStat(
-                  //     category: '미세먼지$index',
-                  //     imgPath: 'asset/img/best.png',
-                  //     level: '최고',
-                  //     stat: '0㎍/㎥',
-                  //     width: cardWidth,
-                  //   ),
-                  // ),
                 ),
               ),
             ],
