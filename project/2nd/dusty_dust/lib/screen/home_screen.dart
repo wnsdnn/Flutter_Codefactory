@@ -1,5 +1,5 @@
-import 'package:dusty_dust/component/category_card.dart';
-import 'package:dusty_dust/component/hourly_card.dart';
+import 'package:dusty_dust/container/category_card.dart';
+import 'package:dusty_dust/container/hourly_card.dart';
 import 'package:dusty_dust/component/main_app_bar.dart';
 import 'package:dusty_dust/component/main_drawer.dart';
 import 'package:dusty_dust/const/regions.dart';
@@ -100,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<Box>(
-      valueListenable: Hive.box(ItemCode.PM10.name).listenable(),
+      valueListenable: Hive.box<StatModel>(ItemCode.PM10.name).listenable(),
       builder: (context, box, widget) {
         // PM10 (미세먼지)에 관한 box가 매개변수로 옴
 
