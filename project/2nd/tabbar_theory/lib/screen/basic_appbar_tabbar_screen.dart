@@ -17,33 +17,34 @@ class BasicAppbarTabbarScreen extends StatelessWidget {
             // PreferredSize - 이거쓰면 child 값에 다른 값들이랑 같이 쓸수 있음
             preferredSize: Size.fromHeight(80),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              // mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                TabBar(
-                  // controller 필수
-                  indicatorColor: Colors.red,
-                  indicatorWeight: 1.0,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  isScrollable: true,
-                  labelColor: Colors.yellow,
-                  unselectedLabelColor: Colors.green,
-                  labelStyle: TextStyle(
-                    fontWeight: FontWeight.w700,
-                  ),
-                  unselectedLabelStyle: TextStyle(
-                    fontWeight: FontWeight.w500,
-                  ),
-                  tabs: TABS
-                      .map(
-                        (e) => Tab(
-                      icon: Icon(e.icon),
-                      child: Text(
-                        e.label,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                Expanded(
+                  child: TabBar(
+                    // controller 필수
+                    indicatorColor: Colors.red,
+                    indicatorWeight: 1.0,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    // isScrollable: true,
+                    labelColor: Colors.yellow,
+                    unselectedLabelColor: Colors.green,
+                    labelStyle: TextStyle(
+                      fontWeight: FontWeight.w700,
                     ),
-                  )
-                      .toList(),
+                    unselectedLabelStyle: TextStyle(
+                      fontWeight: FontWeight.w500,
+                    ),
+                    tabs: TABS
+                        .map(
+                          (e) => Tab(
+                            icon: Icon(e.icon),
+                            child: Expanded(
+                              child: Text(e.label),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
                 ),
               ],
             ),
